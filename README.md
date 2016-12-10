@@ -24,11 +24,11 @@ A slug is just a segment in a system that manipulates the URI in a way that it's
 The Router has a bit of documentation in itself from the comments, but this is how you'd manage an incoming request:
 
 ```php
-  $router = new Router;
+$router = new Router;
   
-  $router->Get('index', function($kontroller){
-    echo "The index was loaded!";
-  });
+$router->Get('index', function($kontroller){
+  echo "The index was loaded!";
+});
 ```
 
 If you put in `index` as what you're looking for, that just means there's no data in the first slug, so a `www.example.com/` call.
