@@ -1,0 +1,57 @@
+This is the strcuture file to follow the standards and understand the DIR structure for new people.
+My names Jek so I had to make this.
+
+-------
+  EXPLAIN THE J.E.K CLASS SYSTEMS. -- THE CORE FOLDER.
+-------
+  Everything used by the build folder to create our application.
+  JEK uses a different method to MVC, and have named it differently.
+  MVC--
+    M: Model      - Stores / Gets data, State
+    V: View       - To be rendered
+    C: Controller - Responds to input
+  JEK--
+    J: Join       - Our connection to the database.
+    E: Enter      - Entrance for our application to the browser.
+    K: Kontrol    - Kontrols the users input and reactions.
+
+  Stack trace for a new-connection:
+    Browser
+      -> Request our site.
+      -> Call to the Routes.
+      -> Routes calls appropriate Kontrol class.
+      -> Kontrol class gathers data for our Enter (View), such as database information, checking
+         if user is logged in information, etc... Kontrol class can call the Join (Model) classes if needed.
+      -> Once Kontrol is done, will call the Enter (View), loading the page for the user.
+
+  Simply
+    Join    - Joins our Kontrol with the Database, all Database code.
+    Enter   - Is called from the Kontrol class to opt data to the page.
+    Kontrol - Controlls all of the user ipt, is called from the Routes file which handles the browsers ipt.
+
+  Stack trace for a url connection like: site.com/profile/1
+    Server
+      -> Has the url -- All we care about is /profile/1.
+      -> Run the url through our "Routes" file, will decide the correct class to call.
+         E.g. - User wants class "Kontrol_Profile" class to be called when segment 1 (profile) is supplied.
+         Management starts from the __construct function, no paramaters are taken, url can be accessed from another class.
+      -> In construct function, management can be done, such as getting the users profile from the next segment,
+         etc, etc... Essentially gathering variables for the Enter to use.
+      -> In Kontroler, the Enter is formed and displayed on the screen.
+-----
+  DIR STRUCTURE.
+-------
+
+jek-framework-container:
+
+  (Contains the core of our framework, all things that will end up making our application.)
+  -core
+    |--api
+    |--backend
+    |--templates
+
+  (Build is the directory containing all of the things needed to build the core of Jek.
+  Essentially calling things in build will construct the application.)
+  -build
+    |--routes.php
+    |--autoload.php
