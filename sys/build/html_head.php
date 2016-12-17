@@ -31,18 +31,20 @@
   */
 
     //Initialize.
-    $head = new Head_Management;
+    $head = new Head_Management(['index']);
 
-    //Define.
-    $head->Plugins([
-      'jquery' => [
-        'js' => ['https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js']
-      ]
-    ]);
-
-    //Load.
-    $head->LoadAllPlugins();
-    $head->LoadRequireJS('/public/js/requirejs/loader.js');
+            $head->When('index', [
+              'css' => [
+                '/public/bootstrap/css/bootstrap.min.css',
+                '/public/bootstrap/css/bootstrap-theme.min.css',
+                '/public/css/main.css'
+              ],
+              'js'  => [
+                '/public/jquery/jquery.min.js',
+                '/public/bootstrap/js/bootstrap.min.js',
+                '/public/js/main.js'
+              ]
+            ]);
 
     //End.
     $head->End();

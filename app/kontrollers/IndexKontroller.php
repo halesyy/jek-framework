@@ -2,8 +2,14 @@
   class IndexKontroller extends Kontroller
     {
         public function index() {
-          $name = 'Jack';
-
-          echo "My name is $name!";
+          $this->c->entry()->load('Index');
         }
+
+        public function database_test()
+          {
+            $j = $this->c->joint()->Index();
+            $j->JDO();
+
+
+          }
     }

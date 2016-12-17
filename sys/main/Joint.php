@@ -6,9 +6,9 @@
 
     //*************************************************************************
 
-      protected $handler = false;
-      protected $psm     = false;
-      protected $auth    = false;
+      public $handler = false;
+      public $psm     = false;
+      public $auth    = false;
 
     //*************************************************************************
 

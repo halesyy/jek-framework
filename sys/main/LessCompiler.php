@@ -1813,6 +1813,8 @@ class lessc {
 		return $out;
 	}
 
+	public function test() { echo 'lil test func yaboi jek added ;)'; }
+
 	public function compileFile($fname, $outFname = null) {
 		if (!is_readable($fname)) {
 			throw new Exception('load error: failed to find '.$fname);
@@ -3671,5 +3673,3 @@ class lessc_formatter_lessjs extends lessc_formatter_classic {
 	public $assignSeparator = ": ";
 	public $selectorSeparator = ",";
 }
-
-

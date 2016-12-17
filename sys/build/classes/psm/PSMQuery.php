@@ -480,7 +480,7 @@
 
           /* This is a function that is used practically and is a testing function as well. */
             # prepared, this is a function meant for a prepared and then executed statement.
-            public function help($query = 'not-given') {
+            public function help($query = 'not-given', $ret = false) {
               if ($query == 'not-given') die('the function <b>help</b> is meant to supply you with information on the query you just tried to execute, and should be used if is failing.');
               # Getting the error info array.
                 $e = $query->errorInfo();
@@ -509,11 +509,12 @@
                   else $succ = false;
 
               # Return management.
-                if ($succ) {
-                  echo 'The query executed correctly - There should be no need for the error report';
-                } else {
-                  $this->display($r);
-                }
+                if ($succ && $ret) return "query no error";
+                  else if ($succ && !$ret) {
+                    echo 'The query executed correctly - There should be no need for the error report';
+                  } else {
+                    $this->Display($r);
+                  }
             } #
 
 

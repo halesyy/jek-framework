@@ -20,6 +20,7 @@
         if ($r) App::Log('Initialization was correctly loaded', 'green');
            else App::Error('Init load', 'Init load was unsuccessful');
       });
+      App::Log('App class afterinit, loaded LOAD_FIRST classes, CONFIG init & MAIN classes', 'green');
 
     //Loading all our libraries we want.
       #Include all classes in this (v) file.
@@ -35,3 +36,4 @@
       App::Log('Finished loading init.php', 'red');
 
     //Management for a set of user wants to load the log.
+      App::FinalLogLoader();

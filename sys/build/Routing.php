@@ -43,21 +43,10 @@
       $kontroller->Load('Index');
     });
 
+    $router->Get('test',  function($kontroller){
+      $kontroller->Load('Test');
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //
+    $router->Get('lolgoaway',  function($kontroller){
+      $kontroller->Load('LolGoAway');
+    });

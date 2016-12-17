@@ -26,27 +26,29 @@
   $cfg['db']['set_pdo_var']              = false;
 
   /*Bypass default-string management.*/
-  $cfg['db']['byp_def_iptstring']        = false;
+  $cfg['db']['byp_def_iptstring']        = true;
 
   /*Your connection details.*/
   $cfg['db']['connection'] = [
     'host' => 'localhost',
-    'db'   => 'habboverse',
+    'db'   => 'test',
     'user' => 'root',
-    'pass' => 'password',
+    'pass' => 'EM',
     'safe' => true
   ];
 
   /*
+  | -----------------------------------------------------------------------------
   | Management for the Auth class load.
   | EXPLAINED:
-  |
+  | -----------------------------------------------------------------------------
   | algo     = Algorithm you want to use when hashing.
   | salt     = Salt you wanna salt your strings with when hashing. (make unique)
   | database-info =
-  |  >table..: The table your users are stored in.
-  |  >first..: Your "Username" table.
-  |  >secnd..: Your "Password" table.
+  |  >>table..: The table your users are stored in.
+  |  >>first..: Your "Username" table.
+  |  >>secnd..: Your "Password" table.
+  | -----------------------------------------------------------------------------
   */
   $cfg['db']['use_auth_class'] = true;
   $cfg['db']['auth'] = [

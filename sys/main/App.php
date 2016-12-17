@@ -7,6 +7,7 @@
     //*****************************************************************
 
       protected static $logs  = [];
+      protected static $run   = false;
 
     //*****************************************************************
 
@@ -29,10 +30,11 @@
         }
 
     /*Loads the report made by the Application.*/
-      public static function LoadLog()
+      public static function LoadLog($force = false)
         {
-          echo "<pre>",print_r( self::$logs ),"</pre>";
-        } public static function Logs() { self::LoadLog(); }
+          if ($force) echo "<pre>",print_r( self::$logs ),"</pre>";
+            else self::$run = true;
+        } public static function Logs() { self::LoadLog($force = false); }
 
 
 
@@ -48,5 +50,14 @@
       public static function Bare($filename)
         {
           require "app/bare/{$filename}";
+        }
+
+
+
+    /*Loads the logs after script execution if user requests.*/
+      public static function FinalLogLoader()
+        {
+          if ( self::$run  )
+            echo "<pre>" , print_r( self::$logs ) , "</pre>";
         }
   }

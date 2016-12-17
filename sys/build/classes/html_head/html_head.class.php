@@ -33,15 +33,17 @@
       protected $to_requirejs = '/public/js/requirejs/require.js';
       /*Path to the Require.js config file.*/
       protected $to_requirejs_config = '/public/js/requirejs/config.js';
+      /*Array containing the index slugs to load the head starter and ender on.*/
+      protected $load_html_start     = [];
 
     //************************************************************************************
 
     /*Constructor.*/
-      public function __construct()
+      public function __construct($load_html_start)
         {
-          echo
-            "<html>\n"
-           ."  <head>\n";
+          $this->load_html_start = $load_html_start;
+          if ( in_array( Url::First(), $load_html_start ) )
+            echo "<html>\n  <head>\n";
         }
   /*If first param = first slug will run.*/
     public function When($slug, $contents)
@@ -106,7 +108,8 @@
   /*Signals the end of the Head.*/
     public function End()
       {
-        echo "  </head>\n  <body>\n    ";
+        if ( in_array( Url::First(), $this->load_html_start ) )
+          echo "  </head>\n  <body>\n    ";
       }
 
 

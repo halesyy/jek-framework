@@ -1,57 +1,34 @@
-This is the strcuture file to follow the standards and understand the DIR structure for new people.
-My names Jek so I had to make this.
+If you want to understand an underlying technology, it's best to know the way that the technology is created, so you feel more
+confident and understood when it comes to creating beautiful code.
 
--------
-  EXPLAIN THE J.E.K CLASS SYSTEMS. -- THE CORE FOLDER.
--------
-  Everything used by the build folder to create our application.
-  JEK uses a different method to MVC, and have named it differently.
-  MVC--
-    M: Model      - Stores / Gets data, State
-    V: View       - To be rendered
-    C: Controller - Responds to input
-  JEK--
-    J: Join       - Our connection to the database.
-    E: Enter      - Entrance for our application to the browser.
-    K: Kontrol    - Kontrols the users input and reactions.
+When the user connects to the server, our main .htaccess file handles the input, and sends the request to the
+`index.php` file each time for management.
 
-  Stack trace for a new-connection:
-    Browser
-      -> Request our site.
-      -> Call to the Routes.
-      -> Routes calls appropriate Kontrol class.
-      -> Kontrol class gathers data for our Enter (View), such as database information, checking
-         if user is logged in information, etc... Kontrol class can call the Join (Model) classes if needed.
-      -> Once Kontrol is done, will call the Enter (View), loading the page for the user.
+This file's essentially the only thing the server ever requests, but once the server has that page requested, the rest of the
+requires are loaded with it.
 
-  Simply
-    Join    - Joins our Kontrol with the Database, all Database code.
-    Enter   - Is called from the Kontrol class to opt data to the page.
-    Kontrol - Controlls all of the user ipt, is called from the Routes file which handles the browsers ipt.
+When the browser connects to the server, the Initialization file
+is loacated at "sys/Init.php," which handles all the top-level initialization.
 
-  Stack trace for a url connection like: site.com/profile/1
-    Server
-      -> Has the url -- All we care about is /profile/1.
-      -> Run the url through our "Routes" file, will decide the correct class to call.
-         E.g. - User wants class "Kontrol_Profile" class to be called when segment 1 (profile) is supplied.
-         Management starts from the __construct function, no paramaters are taken, url can be accessed from another class.
-      -> In construct function, management can be done, such as getting the users profile from the next segment,
-         etc, etc... Essentially gathering variables for the Enter to use.
-      -> In Kontroler, the Enter is formed and displayed on the screen.
------
-  DIR STRUCTURE.
--------
+The order of the Init file is as goes:
 
-jek-framework-container:
-
-  (Contains the core of our framework, all things that will end up making our application.)
-  -core
-    |--api
-    |--backend
-    |--templates
-
-  (Build is the directory containing all of the things needed to build the core of Jek.
-  Essentially calling things in build will construct the application.)
-  -build
-    |--routes.php
-    |--autoload.php
+  >1. Load all of the "First Load" functions / classes from "/sys/load_first/*.php"
+  >2. Loading the config builder.
+    >>  Config builder requires in configs and manages the new-found config variables in an ordered fashion.
+  >3. Loading all of the main classes into the system from "/sys/main/*.php," these classes are classes such as the Kontroller,
+      Entries, Joints, User Classes, App class- Just classes.
+  >4. Setup the App environment.
+    >> The "App" environment is creating the instnace for the "App" class, which manages the OPTStream/IPTStream and Errors for
+       the Framework.
+    >> The $app->Init(CALLBACK) is called which returns a true/false variable if INIT was done correctly, if you want to alter
+       possible faults in the INIT of the App Init file, just edit them in the __constructor found at "sys/main/App.php"
+  >5. Load the Libs Init file.
+    >> The Libs Init file is just a file that requires in classes you've added, essentially the Library manager.
+  >6. Finally! User interaction! Loading the Routing.php file located at "sys/build/Routing.php."
+    >> The routing file manages the incoming requests from the URI (trailing slash) making it easier to manage connections,
+       say the user requests "/profile/jek" - The Routing would be like so:
+         >>> $router->Get('profile', function($kontroller){
+                $kontroller->Load('SomeKontroller');
+             });
+       That'll load the SomeKontroller when the user requests /profile
+  >7. Finished Init! Rest of the code-base is ran inside of the Kontroller Routes.
