@@ -1,0 +1,34 @@
+/*
+| All CSS for the middle part of a page, the content container.
+*/
+
+#content
+  {
+    width:        60%;
+    margin-left:  20%;
+    margin-right: 20%;
+
+    margin-top:   20px;
+    font-size:    20px;
+
+    color:        #666666;
+  }
+h1
+  {
+    color: #666666;
+    font-family: Arial, Verdana;
+    text-align: center;
+  }
+
+.paragraph
+  {
+    padding: 10px;
+  }
+.paragraph-container
+  {
+    margin: 20px 0 20px 0 !important;
+  }
+.center
+  {
+    text-align: center;
+  }

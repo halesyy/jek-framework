@@ -43,6 +43,9 @@
                 '/public/jquery/jquery.min.js',
                 '/public/bootstrap/js/bootstrap.min.js',
                 '/public/js/main.js'
+              ],
+              'google_font' => [
+                'Lato'
               ]
             ]);
 

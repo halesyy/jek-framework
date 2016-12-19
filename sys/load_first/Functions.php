@@ -10,6 +10,6 @@
     function load_class( $class_name )
       {
         if (!class_exists( $class_name ))
-          die(" class <b>{$class_name}</b> does not exists ");
+          App::Error("Class '<b>$class_name</b>' couldn't be found.", "Please make sure this class exists.");
         else return new $class_name;
       }

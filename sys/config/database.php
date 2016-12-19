@@ -31,9 +31,9 @@
   /*Your connection details.*/
   $cfg['db']['connection'] = [
     'host' => 'localhost',
-    'db'   => 'test',
+    'db'   => 'habboverse',
     'user' => 'root',
-    'pass' => 'EM',
+    'pass' => 'password',
     'safe' => true
   ];
 

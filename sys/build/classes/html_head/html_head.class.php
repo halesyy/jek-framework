@@ -10,11 +10,13 @@
     //************************************************************************************
 
       protected $schemes = [
-        'css'        => "<link rel='stylesheet' type='text/css' href='IMPORT' />",
-        'js'         => "<script src='IMPORT'></script>",
-        'javascript' => "<script src='IMPORT'></script>",
-        'asyncjs'    => "<script src='IMPORT' async></script>",
-        'title'      => "<title>IMPORT</title>"
+        'css'         => "<link rel='stylesheet' type='text/css' href='IMPORT' />",
+        'js'          => "<script src='IMPORT'></script>",
+        'javascript'  => "<script src='IMPORT'></script>",
+        'asyncjs'     => "<script src='IMPORT' async></script>",
+        'title'       => "<title>IMPORT</title>",
+
+        'google_font' => "<link href='https://fonts.googleapis.com/css?family=IMPORT' rel='stylesheet'>"
       ];
 
       protected $plugins = [

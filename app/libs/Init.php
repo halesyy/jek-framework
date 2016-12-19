@@ -8,8 +8,19 @@
   /*TO SELF PARENT FOLDER.*/
   $to = "app/libs";
 
+
+  //jHTML.
   include_once "{$to}/jHTML/jHTML_Components.class.php";
   include_once "{$to}/jHTML/jHTML_Templates.class.php";
   include_once "{$to}/jHTML/jHTML_Interpreter.class.php";
   include_once "{$to}/jHTML/jHTML_Compile.class.php";
   include_once "{$to}/jHTML/jHTML.class.php";
+
+  //String m. class.
+  include_once "{$to}/String/s_Settings.class.php";
+  include_once "{$to}/String/s_Management.class.php";
+  include_once "{$to}/String/s_Vars.class.php";
+  include_once "{$to}/String/String.class.php";
+
+  //SuperCrypt class.
+  include_once "{$to}/SPRCRPT/SuperCrypt.php";

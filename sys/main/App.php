@@ -23,6 +23,12 @@
           $do($successful);
         }
 
+    /*Returns the location of the config file wanted.*/
+      public static function LoadConfig($configname)
+        {
+          return "sys/config/{$configname}.php";
+        }
+
     /*This is the function to add reports to the Apps reporting system.*/
       public static function Log($msg, $color = 'green')
         {
@@ -41,7 +47,16 @@
     /*Run for an Error. -- For JEK.*/
       public static function Error($title, $msg)
         {
-          echo "<div class='jek-error-log'> <div class='jek-error-title'>{$title}</div> <div class='jek-error-msg'>{$msg}</div> </div>";
+          self::TEMPCSS( '/public/css/jek-core/errors.css' );
+          echo "<div class='jek-error-log'><div class='jek-error-top'>JEK Framework Error Log</div><div class='jek-error-title'><h1>{$title}</h1></div> <div class='jek-error-msg'>{$msg}</div> </div>";
+          die();
+        }
+    /*Run for an Error. -- For 404 messages.*/
+      public static function Error_404($title = '404', $message = 'Sorry, not found!')
+        {
+          self::TEMPCSS( '/public/css/jek-core/errors.css' );
+          echo "<div class='jek-404-title'><h1>{$title}</h1></div><div class='jek-404-content'>{$message}</div>";
+          die();
         }
 
 
@@ -59,5 +74,16 @@
         {
           if ( self::$run  )
             echo "<pre>" , print_r( self::$logs ) , "</pre>";
+        }
+
+    /*Loads a temp CSS.*/
+      public static function TEMPCSS($to)
+        {
+          echo "<link href='$to' type='text/css' rel='stylesheet' />";
+        }
+    /*Loads a temp JS.*/
+      public static function TEMPJS($to)
+        {
+          echo "<script src='$to'></script>";
         }
   }

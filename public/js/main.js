@@ -27,9 +27,14 @@ $(document).ready(function(){
     type : 'click',
     typeext: {
       // .CLASS or #ID.
-      typeofclick  : '.jek-trigger',
+      typeofclick  : '.navbar-link',
       display_href : true
     },
+    // Where the content is placed.
+    supply: '#content-place',
+
+    // If the user wants error reporting or not.
+    error_reporting: true,
 
     // Last segment that was used.
     last_segment: false,
@@ -68,6 +73,16 @@ $(document).ready(function(){
 
     // Function for initializing the class.
     init: function() {
+
+      // Checking for exising content.
+      if (this.hash)
+      {
+        kontroller = window.jek.seg(1);
+        method     = window.jek.seg(2);
+        window.jek.load( kontroller, method );
+      }
+
+      // Checking type & managing.
       if (this.type == 'click')
       {
         $( this.typeext.typeofclick ).click(function(event){
@@ -98,8 +113,14 @@ $(document).ready(function(){
 
     // Called when wanting to load some content.
     load: function( kontroller, method ) {
+      if (window.jek.error_reporting)
+        console.log( "LOADING: " + kontroller + "/" + method );
+
       $.get('/' + kontroller + '/' + method, function(body){
-        $('#jek-midpage-view').html( body );
+        $( window.jek.supply ).html( body );
+
+        if (window.jek.error_reporting)
+          console.log('get request successful! loaded');
       });
     }
 

@@ -11,6 +11,7 @@
   |----------------------------------------------------------------------------------
   */
 
+
   //Main config.
   require_once "sys/config/config.php";
   if ($cfg['main']['run_html_head_management'])

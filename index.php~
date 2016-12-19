@@ -70,8 +70,7 @@
 
   //************************************************************************************
 
-  //Each page load loads the Init file.
-  
+
   require_once "sys/Init.php";
 
 

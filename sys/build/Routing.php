@@ -39,14 +39,13 @@
 
     $router = new Router;
 
-    $router->Get('index', function($kontroller){
-      $kontroller->Load('Index');
-    });
+    $router->Mult([
+      'index'    => 'main/Index',
+      'home'     => 'main/Home',
+      'test'     => 'Test'
+    ]);
 
-    $router->Get('test',  function($kontroller){
-      $kontroller->Load('Test');
-    });
 
-    $router->Get('lolgoaway',  function($kontroller){
-      $kontroller->Load('LolGoAway');
-    });
+
+
+    //

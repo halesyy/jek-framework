@@ -51,4 +51,19 @@
             if ( isset($_POST[$slugname]) )
               $do( $_POST[$slugname] );
           }
+
+      /*Function for loading multiple managers in the loader.*/
+        public function Mult($set_arr)
+          {
+            // Manager for multiple entries per func call.
+            $cur = Url::First();
+
+            if ( in_array( $cur, array_keys($set_arr) ) )
+              {
+                $kontroller = new Kontroller;
+                $kontroller->Load( $set_arr[$cur] );
+              }
+            else
+              App::Error_404();
+          }
     }
