@@ -45,7 +45,7 @@
         {
           $this->load_html_start = $load_html_start;
           if ( in_array( Url::First(), $load_html_start ) )
-            echo "<html>\n  <head>\n";
+            echo "<html>\n<head>\n";
         }
   /*If first param = first slug will run.*/
     public function When($slug, $contents)
@@ -64,8 +64,7 @@
 
         foreach ($to_import as $import)
         {
-          echo "    <!--{$scheme}-->\n";
-          echo "    ".str_replace( 'IMPORT', $import, $template )."\n";
+          echo str_replace( 'IMPORT', $import, $template )."\n";
         }
       }
 
@@ -111,7 +110,7 @@
     public function End()
       {
         if ( in_array( Url::First(), $this->load_html_start ) )
-          echo "  </head>\n  <body>\n    ";
+          echo "</head>\n<body>\n";
       }
 
 
@@ -119,8 +118,7 @@
     public function LoadRequireJS($loader = '/public/js/requirejs/loader.js')
       {
         echo
-        "    "
-        ."<script src='{$this->to_requirejs}' data-main='{$this->to_requirejs_config}'></script>\n"
+        "<script src='{$this->to_requirejs}' data-main='{$this->to_requirejs_config}'></script>\n"
         ."<script>require(['loader', function(){}])</script>";
       }
 

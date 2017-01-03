@@ -5,22 +5,37 @@
       Kontroller Class.
 
       Manages the Kontrollers (First method of call from Router)
+
+      NEW UPDATED KONTROLLER INFORMATION:
+        New Kontroller has the Router manage the KONTROLLER to call,
+        AND the METHOD to call.
+        New Kontroller also runs off of Kontroller full names,
+        So, IndexKontroller instead of the old "Index" which turns
+        into IndexKontroller later.
     */
 
     //*******************************************************************************
 
-      public $Kontroller       = false;
+      // The current used Kontroller.
+      public $_CURRENT_KONTROLLER = false;
+      // The method name that's called when the method wanted to call doesn't exist.
+      public $Kontroller_Fallback_Method_Name = 'index';
+
       public $Kontroller_Class = false;
       public $Kontroller_Name  = false;
 
-      //If the user changes this in their Class, will not display header/footer.
-      public $RunHeaderFooter  = true;
+      // The location for your Kontrollers.
+      public $Kontroller_Locations = 'app/kontrollers/';
+
+      // OPTIONS METHOD WAS DEPRECATED.
+      // NOW IF HEADER WANT, LOAD FROM INDEX OR CREATE METHOD FOR TOP LOAD THEN BOTTOM LOAD.
+      // SIMPLY $this->loader->entry->load('templates/Heade') [YOUR PAGE] $this->loader->entry->load('templates/Footer');
 
       /*
       | The class accessor for the classes of this class.
-      | >>> $this->c->psm->query(1, 2);
+      | >>> $this->loader->psm->query(1, 2);
       */
-      public $c = [];
+      public $loader = [];
 
     //*******************************************************************************
 
@@ -31,120 +46,92 @@
         }
 
 
-
-
-
-
-    /*Loads a Kontroller.*/
-      public function Load($kontroller_name)
+      // The information the router sends to the Kontroller class to manage.
+      public function RouterKontrollerLoader($kontroller, $method = false, $dynamic = false)
         {
-          $kontroller_location = $this->Kontroller_Exists( $kontroller_name );
-          // Checks if the file looking for exists.
-          if ( $kontroller_location !== false )
+          $kontroller_feedback = $this->KontrollerExists_Information( $kontroller );
+          if ( $kontroller_feedback[0] === false )
+            App::Error("<b>Router -> RouterKontrollerLoader</b>", "Tried to load Kontroller {$kontroller} but FILE not found, looking for: <b>{$kontroller_feedback[1]}</b>.");
+          else
             {
-              //It exists, the return is: [LOCATION, NAME].
+              // Loading the Kontroller and loading methods.
+              require_once( $kontroller_feedback[1] );
 
-              include_once       "{$kontroller_location[0]}";
-              $kontroller_name =   $kontroller_location[1];
+              // Managing the location for the Kontroller file to get the actual Kontroller name.
+              $kontroller = $this->ManageKontrollerName( $kontroller );
+
+              // Setting class references & Sets.
+              $_CURRENT_KONTROLLER = new $kontroller;
+              $this->_CURRENT_KONTROLLER = $_CURRENT_KONTROLLER;
+
+
+              // Dynamic manager.
+              if ($dynamic)
+                {
+                  /*
+                  | Dynamic load.
+                  |
+                  | We give the function the user has mapped to the slug the paramaters they need.
+                  | First paramater = Slug2, Third paramater = Slug3, etc...
+                  */
+                  $method = $method;
+                  $parms  = Url::GetSegmentsFrom(1);
+                }
+              else
+                {
+                  /*
+                  | Un-Dynamic load.
+                  |
+                  | We load the function the user wants from the second paramater, meaning:
+                  | /kontroller/method/parm-1-for-method/parm-2-for-method.
+                  */
+                  $method = Url::Second();
+                  $parms  = Url::GetSegmentsFrom(2);
+                }
+
+                // To call the method the user wants requested, or call the "fallback" function.
+                if ( method_exists( $_CURRENT_KONTROLLER, $method ) )
+                  $_CURRENT_KONTROLLER->$method( $parms );
+                else if ( method_exists( $_CURRENT_KONTROLLER, $this->Kontroller_Fallback_Method_Name ) )
+                  {
+                    $method = $this->Kontroller_Fallback_Method_Name;
+                    $_CURRENT_KONTROLLER->$method( $parms );
+                  }
+                else App::Error('KontrollerLoader -> Load Fallback Method', "Kontroller {$kontroller} could not load wanted method OR fallback method. To set the Fallback Method name change the variable name in the Kontroller class.");
             }
-          else  App::Error("Kontroller '{$kontroller_name}' class file could not be found.", "Kontroller file <b>/app/kontrollers/{$kontroller_name}Kontroller.php</b> couldn't be found. Try checking that the file exists.");
 
-          // Creating the class instance. [MAKE SURE TO NOT USE CONSTRUCT FUNCTIONS]
-          $this->Kontroller_Class = load_class( "{$kontroller_name}" );
-          $this->Kontroller_Name  = $kontroller_name;
-
-          // Manager for if there is an options method. -- Options change the way the code is executed.
-          // Example, if you put inside an options method "$this->RunHeaderFooter = false;" - No header/footer is loaded on that page.
-          if ( method_exists( $this->Kontroller_Class, 'options' ) )
-          $this->Kontroller_Class->options();
+        }
+      // End of Router call manager.
 
 
-          // Checking that the user wants to use a header/footer load. -- Changeable in the options method.
-          if ( $this->Kontroller_Class->RunHeaderFooter )
+
+
+      // IPTs The raw Kontroller name and returns what the Kontroller Class name will be.
+      public function ManageKontrollerName($kontroller_name)
+        {
+          // Manipulation of the Kontroller name before creating the class instance. Output = The Kontroller Class name.
+
+          $parts = explode( '/', $kontroller_name );
+          $kontroller_name = $parts[ count($parts) - 1 ];
+
+          return $kontroller_name;
+        }
+      // Gets the information on the Kontroller Name that's useful.
+      // Current format: [ LOCATION_REAL, KONTROLLER_FILENAME, KONTROLLER_RAW_NAME ]
+      public function KontrollerExists_Information( $kontroller_name )
+        {
+          // Checks if the Kontroller is existant, if so, will return an array of data for the Kontroller.
+          $kontroller_locations = $this->Kontroller_Locations;
+          $kontroller_filename  = $kontroller_locations . $kontroller_name . '.php';
+          if ( file_exists( $kontroller_filename ) )
             {
-              $this->BaseLoad('templates/Header');
-              $this->LoadKontrollerMethod( $this->Kontroller_Class );
-              $this->BaseLoad('templates/Footer');
+              return [ true,  $kontroller_filename, $kontroller_name ];
             }
           else
             {
-              $this->LoadKontrollerMethod( $this->Kontroller_Class );
+              return   [ false, $kontroller_filename, $kontroller_name ];
             }
         }
-
-
-
-
-
-    /*Function for loading a classes method.*/
-      public function LoadKontrollerMethod($kontroller_class)
-        {
-          $mthd = Url::Second();
-
-          // Manager for a 'always' method inside method.
-          if ( method_exists( $kontroller_class, 'always' ) )
-          $this->$kontroller_class->Always();
-
-          // Manager for method wanting to be called.
-          if ( method_exists( $kontroller_class, $mthd ) ) $kontroller_class->$mthd();
-          else $kontroller_class->Index();
-        }
-
-
-
-
-
-    /*Base load for loading a Kontroller and only a Kontroller, for a class you know def. exists.
-    BASE ALWAYS LOADS THE KONTROLLER THEN LOADS THE INDEX METHOD.*/
-      public function BaseLoad($kontroller_name)
-        {
-          $kontroller_location = $this->Kontroller_Exists($kontroller_name);
-          if ($kontroller_location !== false)
-            {
-              include_once "{$kontroller_location[0]}";
-              $kontroller = new $kontroller_location[1];
-              $kontroller->index();
-            }
-          else App::Error("BaseLoad fail <br/> Kontroller '<b>{$kontroller_name}Kontroller.php</b>' file not found.", "Please double check the input.");
-
-
-          // $kontroller_name .= 'Kontroller';
-          // include_once "app/kontrollers/{$kontroller_name}.php";
-          // $k = new $kontroller_name;
-          // $k->index();
-        }
-
-
-
-
-
-    /*Checks if a Kontroller exists.
-    RETURNS: FALSE if not exist, [LOCATION, NAME] if exist.*/
-      public function Kontroller_Exists($kontroller_name)
-        {
-          //Kontroller_ind  = Index of Kontroller, so (name - _Kontroller)
-          //NOTE            = Kontrollers can be paths.
-          //Kontroller_name = Real class name of Kontroller.
-
-          //Splits by /, then gets the last one.
-          $kontroller_parts = explode('/',$kontroller_name);
-          $kontroller_ind   = $kontroller_parts[ count($kontroller_parts) - 1 ];
-
-          //The actual location of the file trying to be loaded.
-          $kontroller_file  = "{$kontroller_name}Kontroller.php";
-
-
-          if ( file_exists( "app/kontrollers/$kontroller_file" ) )
-            {
-              return ["app/kontrollers/$kontroller_file","{$kontroller_ind}Kontroller"];
-            }
-          else return false;
-        }
-
-
-
-
-
 
     /*Loads classes you want to be loaded to "$kontroller->classes->some_class_you_want"*/
       public function KontrollerClassLoader()
@@ -155,7 +142,7 @@
           | All the $classes[CLASS_ACCESSOR] = CLASS_REFERENCE_INSTANCE's
           | are accessible from the class by doing:
           |
-          | > $this->c->CLASS_ACCESSOR = CLASS_REFERENCE_INSTANCE.
+          | > $this->loader->class_accessor = class_reference_instance.
           | >> Because -- They're stored in a mini-class containing a __call
           | >> magic method that's takes in the func name and uses that as
           | >> the call method.
@@ -171,8 +158,8 @@
           $classes['lessc']      = load_class( 'lessc' );
           $classes['super']      = load_class( 'SuperCrypt' );
 
-          $c = new KontrollerClassManager( $classes );
-          $this->c = $c;
+          $loader = new KontrollerClassManager( $classes );
+          $this->loader = $loader;
         }
 
 
@@ -183,16 +170,10 @@
     /*After running the class, will close the class from being accessed again.
     -Should be used after set the class variables and don't need to access anymore.
     -Run when no need of class variables.*/
-      public function close_kontroller()
+      public function finish()
         {
-          $this->c = null;
+          $this->loader = null;
         }
-
-
-
-
-
-
     /*Loads multiple classes and returns their object references.*/
       public function load_classes($load_arr)
         {
@@ -218,10 +199,12 @@
 
 
 
-
+  // Our Class Loader.
   class KontrollerClassManager
     {
       public $classes = [];
+
+
 
       public function __construct($classes_reference_grid)
         {
@@ -235,8 +218,17 @@
           | >> its treated as a string we can use to reference
           | >> the input class, return the string and give you
           | >> the class.
+          |
+          | We're supplied with array with [class_name => class_instance]
           */
+
           $this->classes = $classes_reference_grid;
+        }
+
+      public function __get($class_name)
+        {
+          if (isset( $this->classes[$class_name] )) return $this->classes[$class_name];
+            else App::Error("KontrollerClassManager Error", "Could not find the class <b>{$class_name}</b> requested from a Kontroller. <i>\$this->loader->{$class_name} NOT EXIST</i>");
         }
 
       public function __call($class_to_access, $params)

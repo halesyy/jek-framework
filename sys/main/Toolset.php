@@ -12,13 +12,12 @@
             if (is_array($arr) || is_object($arr))
               {
                 //management for "invisible" ipts such as true/false.
-                foreach ($arr as $index => $items)
                 // if ($arr[$index] === false) $arr[$index] = 'false';
                 // else if ($arr[$index] === true) $arr[$index] = 'true';
                 //opts the array.
                 echo "<pre>",print_r($arr),"</pre>";
               } else {
-                echo "<b>$arr</b>";
+                echo "<h2>$arr</h2>";
               }
           }
         }

@@ -2,20 +2,16 @@
   class IndexJoint extends Joint
   {
 
-    public function JDO()
+    public function PSM_Tester()
       {
-        include "sys/in-dev/jdo/PJDO_Helpers.php";
-        include "sys/in-dev/jdo/PJDO_Chains.php";
-        include "sys/in-dev/jdo/PJDO_Queries.php";
-        include "sys/in-dev/jdo/PJDO_Drivers.php";
-        include "sys/in-dev/jdo/PJDO_Main.php";
+        $psm = $this->psm;
 
-        $j = new PJDO('localhost', 'test', 'root', '', [
-          'safe' => true
-        ]);
+        $username  = 'jek';
 
-        $q = $j->single("SELECT * FROM test WHERE id = :id", [':id' => 2]);
-        $j->Display($q);
+        if ($psm->rows( $psm->short_cstatement(['users','username',"username = {$username}"])['statement'], $psm->tempbinds ))
+          echo 'This username is in use!';
+        else
+          echo 'This username is not in use!';
       }
 
   }

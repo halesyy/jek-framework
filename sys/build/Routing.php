@@ -38,11 +38,21 @@
   */
 
     $router = new Router;
+    $router->Api();
 
-    $router->Mult([
-      'index'    => 'main/Index',
-      'home'     => 'main/Home',
-      'test'     => 'Test'
+
+    $router->RouteMultipleInstances([
+      'index' => [
+        'call'    => 'main/IndexKontroller@index',
+        'when'    => 'get',
+        'dynamic' => true
+      ],
+
+      'home' => [
+        'call'    => 'main/IndexKontroller@home',
+        'when'    => 'get',
+        'dynamic' => true
+      ]
     ]);
 
 

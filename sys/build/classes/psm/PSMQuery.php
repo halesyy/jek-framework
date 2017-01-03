@@ -27,112 +27,84 @@
       ::
     */
 
-    # Returns an associative array.
-    const assoc = PDO::FETCH_ASSOC;
-    # Returns an object.
-    const obj   = PDO::FETCH_OBJ;
-    # Returns the object as it's accessed.
-    const lazy  = PDO::FETCH_LAZY;
-    # Returns column => data
-    const named = PDO::FETCH_NAMED;
-    # Returns both an associative array and an numerative array.
-    const both  = PDO::FETCH_BOTH;
-    # Returns a class.
-    const clas  = PDO::FETCH_CLASS;
 
-    # Setting the const version if needed for some absurd reason.
-    const version = "f*** off dont use the static methods for my variables MATE wanna FKN RAZZLE DAZZLE";
-
+    // ALL MAPS OF PDO RETRIEVAL ACCESSORS.
+      # Returns an associative array.
+      const assoc = PDO::FETCH_ASSOC;
+      # Returns an object.
+      const obj   = PDO::FETCH_OBJ;
+      # Returns the object as it's accessed.
+      const lazy  = PDO::FETCH_LAZY;
+      # Returns column => data
+      const named = PDO::FETCH_NAMED;
+      # Returns both an associative array and an numerative array.
+      const both  = PDO::FETCH_BOTH;
+      # Returns a class.
+      const clas  = PDO::FETCH_CLASS;
 
 
+    // Temporary veriable sets.
+      public $tempstatement = false;
+      public $tempbinds     = false;
+      public $tempquery     = false;
 
 
 
-
-    /*
-      BASE PDO / TESTING FUNCTIONS.
-    */
-      # The testing function to see if PSM is working.
-        public function test() {
-          echo "<b>psm {$this->version} is open, and running fine.";
-        } public function t() { return $this->test(); }
-
-      /* This is a function making a simple query and looping the given function. */
-        public function query($statement, callable $loop, $binding = false, $fetch_type = PSM::assoc) {
-          # THIS -> PDO HANDLER -> MAKE_QUERY_WITH -> $STATEMENT.
-            if ($binding) { # There are binding variables, use!
-              $query = $this->handler->prepare($statement);
-              $query->execute($binding);
-            } else { # No binding variables.
-              $query = $this->handler->query($statement);
-            }
-          # Management for the if there's a wanted fetch-type.
-            if ($fetch_type !== false) {
-              $query->setFetchMode($fetch_type);
-            }
-          # Will feed the loop the PSM Variable, a $_POST object and a $_SESSION object.
-            foreach ($query as $row) {
-              $loop($row, $this, (object) $_POST, (object) $_SESSION);
-            }
-          return $query;
-        }
+      /*Function called if you want to test your PSM/PDO connection. */
+        public function test() { echo "<b>psm {$this->version} is open, and running fine."; } public function t() { return $this->test(); }
 
 
 
 
+      /*
+      | Analyzes the query as well as housing for the error handler.
+      | Error handler will report data on query if needed.
+      */
 
+      /*QA = Query Analyzer, will analyze a query and report back.*/
+        public function QA($query = 'not-given', $ret = false)
+          {
+            if ($query == 'not-given') die('the function <b>help</b> is meant to supply you with information on the query you just tried to execute, and should be used if is failing.');
+            # Getting the error info array.
+              $e = $query->errorInfo();
+              $r = []; # R = Return, returning array.
+            # Will start adding values into the Return array.
+              $r['PSM - pHelp'] = '<b>INFORMATION GATHERED FROM THE PREPARED / EXECUTED QUERY</b>';
+              $r['MYSQL eCode'] = $e[0].' - Google the meaning of the code';
+              $r['Drivr eCode'] = $e[1].'  - Error specific to the driver';
+            # Manip for getting the correct error message to display.
+              $search = [
+                '/Table \'(.*?)\.(.*?)\' doesn\'t exist/is',
+                '/You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near (.*?) at line (.*?)/is',
+                '/Unknown column \'(.*?)\' in \'(.*?)\'/is',
+                '/Column count doesn\'t match value count at row (.*?)/is'
+              ]; $replace = [
+                'The table <b>$2</b> doesn\'t exist in the database <b>$1</b>, did you spell it right?',
+                'There was a syntax error, if you want to combat it effectively, please seperate each SQL word into seperate lines then retry, now check <b>line: $2</b>',
+                'The column (<b>$1</b>) in the table you tried to insert/select from into doesn\'t exist, did you spell it right?',
+                'The amount of <b>column\'s</b> vs <b>inserting values</b> does not match up, re count them!'
+              ]; $r['Custom Mesg'] =  preg_replace($search,$replace,$e[2]);
+              $r['Raw Message'] = $e[2];
+              if ($query->execute()) $r['Query Execu'] = 'true';
+                else $r['Query Execu'] = 'false';
+            # Management for checking if there is even an error.
+              if ($e[0] == "00000") $succ = true;
+                else $succ = false;
 
-
-
-
-
-
-      /* This static query get executed - This is a function that only needs to be ran, and not managed. */
-        # - This functions can also be used as a query-return, just use this function to get the query back.
-        public function static_query($statement, $binding = false) {
-            if ($binding) {
-              $query = $this->handler->prepare($statement);
-              $query->execute($binding);
-            } else {
-              $query = $this->handler->query($statement);
-            }
-          return $query;
-        }
-
-      /* This function will return the first row gathered from a query. */
-        public function query_set($statement, $binding = false) {
-          # Using the now-made static_query function to get the returned true query back.
-            $query = $this->static_query($statement, $binding);
-
-            return $query->fetch(PDO::FETCH_ASSOC);
-        }
-
-      /* This function returns the row count of the query. */
-        public function row_count($statement, $binding = false) {
-          $query = $this->static_query($statement, $binding);
-
-          return $query->rowCount();
-        } public function rc($statement, $binding = false) { $this->row_count($statement, $binding); }
-          # The sub-function to row_count meant to use a pre-made query instead of a statement.
-          public function query_row_count($query) {
-            return $query->rowCount();
-          } public function qrc($statement, $binding = false) { $this->row_count($statement, $binding); }
-          # End of sub-functions for row_count.
-
-        /* Takes in a class-name and creates class, will then perform the query given from class variables and return the class with the results from the query. */
-          public function class_query($class_name) {
-              $class = new $class_name();
-            // Getting the statment + binds from the class.
-              $statement = $class->statementinfo['statement'];
-              $binds     = $class->statementinfo['binds'];
-            // Making query.
-              $query = $this->handler->prepare($statement);
-              $query->execute($binds);
-              $query->setFetchMode(PDO::FETCH_CLASS, $class_name);
-              $return = $query->fetch();
-
-            if (!$return) die('psm - <b>class_query</b> was called - no rows returned [returned <i>false</i>]');
-              else return $return;
+            # Return management.
+              if ($succ && $ret) return "query_no_error";
+              else if ($succ && !$ret)
+                echo 'The query executed correctly - There should be no need for the error report';
+              else
+                $this->Display($r);
+          } public function Help($query = 'not-given', $ret = false) { $this->QA($query, $ret); }
+      /*PSM Error Reporting.*/
+        public function Error($title, $message, $query = false)
+          {
+            echo "<div class='psm-error-container'><div class='psm-error-title'>{$title}</div><div class='psm-error-message'>{$message}</div></div>";
+            if ($query !== false)
+              $this->QA($query);
+            exit;
           }
 
 
@@ -141,6 +113,159 @@
 
 
 
+      /*Will create a query.*/
+        public function cquery($statement, $binding = false)
+          {
+            if ($binding !== false)
+              {
+                $q = $this->handler->prepare($statement);
+                $return = $q->execute($binding);
+                if ($return === false) return $this->Error("<strong>CQUERY</strong> called", "Execution of query returned false", $q);
+                else return $q;
+              }
+            else
+              {
+                $q = $this->handler->query($statement);
+                if ($q === false) $this->Error("<strong>CQUERY</strong called", "Query build returned falee - Can't show results cause base query");
+                else return $q;
+              }
+          }
+
+
+
+      /*Will create a statement depending on the inputs.*/
+        public function cstatement($array, $build = false)
+          {
+            // Reset definitions.
+            if (isset($array['columns'])) $array['cols'] = $array['columns'];
+            // Creating the statement container as well as the binds contains.
+            $statement = 'SELECT';
+            $binds     = [];
+            // COLUMNS.
+            if (isset( $array['cols'] )) $statement .= " {$array['cols']}";
+            else $statement .= ' *';
+            // TABLE.
+            if (isset( $array['table'] )) $statement .= " FROM {$array['table']}";
+            // WHERE.
+            if (isset( $array['where'] ))
+              {
+                $where_clauses = explode(' = ', $array['where']);
+                $statement .= " WHERE {$where_clauses[0]} = ?";
+                array_push($binds, $where_clauses[1]);
+              }
+            // ORDER.
+            if (isset( $array['order'] )) $statement .= " ORDER BY {$array['order'][0]} {$array['order'][1]}";
+            // LIMIT.
+            if (isset( $array['limit'] )) $statement .= " LIMIT {$array['limit']}";
+            // RETURN.
+            if ($build)
+              {
+                $q = $this->cquery( $statement, $binds );
+                return $q;
+              }
+            else
+              {
+                // Manager for returning data.
+                if (count($binds) == 0)
+                  {
+                    // Sets the temporary statement for later retrieval if needed.
+                    $this->tempstatement = $statement;
+                    return $statement;
+                  }
+                else
+                  {
+                    // Sets the temporary binds / statement for later retrieval if needed.
+                    $this->tempbinds     = $binds;
+                    $this->tempstatement = $statement;
+                    return [
+                      'statement' => $statement,
+                      'binds'     => $binds
+                    ];
+                  }
+              }
+          }
+      /*The short-hand function for the 'cstatement' function.*/
+        public function short_cstatement($array, $build = false)
+          {
+            // Array definitions are: [Table, Cols, Where, Order and Limit].
+
+            if (isset($array[0])) $call['table'] = $array[0];
+            if (isset($array[1])) $call['cols']  = $array[1];
+            if (isset($array[2])) $call['where'] = $array[2];
+            if (isset($array[3])) $call['order'] = $array[3];
+            if (isset($array[4])) $call['limit'] = $array[4];
+
+            return $this->cstatement( $call, $build );
+          }
+
+
+
+      /*Does a static query -- i.e. INSERT, etc...*/
+        public function stat($statement, $binding)
+          {
+            $this->cquery( $statement, $binding );
+          }
+
+
+      /* Will do a loop with the query data. */
+        public function loop($statement, callable $loop, $binding = false, $fetch_type = PSM::assoc )
+          {
+            $query = $this->cquery( $statement, $binding );
+            // Will loop the query data.
+            foreach ( $query->fetchAll( $fetch_type ) as $row )
+              $loop( $row, $this );
+            return $query;
+          }
+
+
+
+      /*
+      | More PSM-core functions to aid in sole-manipulation.
+      */
+
+
+      /*Returns the first set given from the query data.*/
+        public function set( $statement, $binding = false )
+          {
+            $query = $this->cquery($statement, $binding);
+            return $query->fetch(PDO::FETCH_ASSOC);
+          }
+
+      /*Gets the row count of the statement.*/
+        public function rows($statement, $binding = false)
+          {
+            $rows = $this->cquery($statement, $binding)->rowCount();
+            return $rows;
+          } public function hasdata($statement, $binding = false) { if ($this->rows($statement, $binding)) return true; else return false; }
+            public function hasnodata($statement, $binding = false) { if ($this->rows($statement, $binding)) return false; else return true; }
+      /*Meant to return the row count of the query given, for query creation then multiple usage.*/
+        public function query_rows($query)
+          {
+            $rows = $query->rowCount();
+            return $rows;
+          }
+
+      /* Takes in a class-name and creates class, will then perform the query given from class variables and return the class with the results from the query. */
+        public function class_query($class_name) {
+            $class = new $class_name();
+          // Getting the statment + binds from the class.
+            $statement = $class->statementinfo['statement'];
+            $binds     = $class->statementinfo['binds'];
+          // Making query.
+            $query = $this->handler->prepare($statement);
+            $query->execute($binds);
+            $query->setFetchMode(PDO::FETCH_CLASS, $class_name);
+            $return = $query->fetch();
+
+          if (!$return) die('psm - <b>class_query</b> was called - no rows returned [returned <i>false</i>]');
+            else return $return;
+        }
+
+
+
+
+
+
 
 
 
@@ -151,29 +276,40 @@
 
 
     /*
-      OBJECT-RELATED FUNCTIONS, OBJECT-FUNCTIONS AND PSM-RELATED FUNCTIONS.
-      AS WELL AS SOME CHECK FUNCTIONS.
-        Functions that act on the handler directly.
-        Functions that don't execute acting-queries (SELECT, DELETE, UPDATE)
+    | PSM-Related functions as well as some PDO method rewrites like LastInsertID, etc...
     */
+        // Returns PDO connection.
+        public function connection()
+          {
+            return $this->handler;
+          }
 
-      /* Will get the PDO Handler connection. */
-        public function connection() {
-          return $this->handler;
-        } public function conn() { return $this->handler; }
-      /* Will close the current PDO handler connection. */
-        public function close() {
-          $this->handler = false;
-        }
-      /* Gets the last inserted ID. */
-        public function glid() {
-          return $this->handler->lastInsertId();
-        } public function last_id() { return $this->glid(); }
-      /* Returning the version of PSM. */
-        public function version() {
-          echo "<b>PHP version ".phpversion()."</b> - <b>PSM version {$this->version}</b>";
-        } public function v() { $this->version(); }
-      /* Dispalys information on the PSM class. */
+        // Returns true/false if connected.
+        public function connected()
+          {
+            return $this->connected;
+          }
+
+        // Returns the IP of the client.
+        public function ip()
+          {
+            return $_SERVER['REMOTE_ADDR'];
+          }
+
+        // Returns the last inserted ID.
+        public function last()
+          {
+            return $this->handler->LastInsertID();
+          } public function glid() { $this->last(); }
+
+        // Displays the PSM version.
+        public function version($return)
+          {
+            $v = "<b>PHP version ".phpversion()."</b> - <b>PSM version {$this->version}</b>";
+            if ($return) return $v; else echo $v;
+          } public function v($return = false) { $this->version($return); }
+
+        // Displays information on the PSM class.
         public function info($show_each_method = false) {
           $arr = []; # Return info.
           $methods = get_class_methods($this);
@@ -181,26 +317,23 @@
           if ($show_each_method) {
             $arr['method names'] = $methods;
           }
-          $arr['psm version'] = $this->version;
+          $arr['psm version'] = $this->version(true);
             $this->display($arr);
         }
-      /* Will return all of the columns of the a table. */
+
+      // Returns the columns of a table.
         public function get_cols($table) {
-          $query = $this->handler->query("SELECT * FROM $table");
-          # Gets the keys for the query - The cols.
-          $cols_and_vals = array_keys($query->fetch(PDO::FETCH_ASSOC));
-          # Returns the columns.
-          return $cols_and_vals;
-        }
-      /* Returns if the table exists. */
-        public function table_exists($table) {
-          $query = $this->handler->query("SHOW TABLES LIKE '$table'");
-          if ($this->query_row_count($query)) return true;
-            else return false;
+          $q = $this->cquery( "SELECT * FROM {$table} LIMIT 1" );
+          $cols = array_keys( $q->fetch(PDO::FETCH_ASSOC) );
+          return $cols;
         }
 
-
-
+      // Returns true or false for if a table is existant.
+        public function table_exists($table)
+          {
+            if ( $this->hasdata("SHOW TABLES LIKE :table", [':table' => $table]) )
+              return true; else return false;
+          }
 
 
 
@@ -212,31 +345,30 @@
 
 
     /*
-      FUNCTIONS MEANT TO NOT TAKE IN RAW "STATEMENTS", AND INSTEAD TAKE SOME DATA AND MAKE IT.
+    | Functions meant to make calls simpler to the database - and safer.
+    | You get sick of writing long SQL statements, so use these shorthand functions to
+    | treat array keys as columns and values as data.
     */
-      /* The new update function - Will generate your update query and auto-bind it for you.
-      The where part of the statement also generates a bind for you - just do "id = 1" and itll bind.  */
-        public function update($table, $updates, $where = false, $debug = false, $sdebug = false) {
-          # Starting the query.
-            $statement = "UPDATE $table SET ";
-          # Setting the cols / vals.
-            $cols = array_keys($updates);
-            $vals = array_values($updates);
-          # Adds " = ?" too each of the cols values.
-          foreach ($cols as $index => $col) { $cols[$index] = "$col = ?"; }
-            $statement .= implode(', ', $cols);
-          if ($where) {
-            # Gets each side of the where statement given.
-            $where_parts = explode(' = ',$where);
-            $statement .= " WHERE {$where_parts[0]} = ?";
-            array_push($vals, $where_parts[1]);
+
+      /*Makes the update function easier to use.*/
+        public function update($table, $updates, $where)
+          {
+            // Build the start of the query.
+              $statement = "UPDATE {$table} SET ";
+            // Getting the columns and values.
+              $cols = array_keys($updates);
+              $vals = array_values($updates);
+            // Add ' = ?' to each of the columns.
+              foreach ($cols as $index => $col) { $cols[$index] = "$col = ?"; }
+              $statement .= implode(', ', $cols);
+            // Splits to create the sides of the where statement.
+              $where_parts = explode(' = ',$where);
+              $statement .= " WHERE {$where_parts[0]} = ?";
+              array_push($vals, $where_parts[1]);
+            // Performing the query.
+              $q = $this->cquery( $statement, $vals );
           }
-          # Performing the query.
-            $query = $this->handler->prepare($statement);
-            $query->execute($vals);
-          if ($debug)  { echo $statement; $this->display($vals); }
-          if ($sdebug) { echo $this->help($query); echo "\n $statement"; print_r($vals); }
-        }
+
 
       /* Deletes all the ids that are given to it in the table given. */
         public function delete($table, $ids) {
@@ -246,15 +378,19 @@
               $query->execute([$id]);
             }
         }
+
+
+
       /* Returns each column entry from the table asked, so if input = Table:users, col:username - An array is returned with each username. */
-        public function getall($table, $col) {
-          $query = $this->handler->query("SELECT $col FROM $table");
+        public function get_column_data($table, $col) {
+          $q = $this->cquery( "SELECT {$col} FROM {$table}" );
           $store = [];
-            foreach ($query as $row) {
-              array_push($store, $row[$col]);
-            }
+            foreach ($q->fetchAll() as $row)
+            array_push($store, $row[$col]);
           return $store;
-        } public function ga($table, $col) { $this->getall($table, $col); }
+        }
+
+
 
       /* Will go into the table and find the column, and find the ID of given ID, and increase it by how it wants. */
         public function plus($table, $col, $id, $by) {
@@ -270,6 +406,21 @@
               ':id' => $id
             ]);
         }
+
+
+
+
+
+    /*This uses the where-clause mentioner, meaning the where area is split by ' = ', then binded appropriately.*/
+      public function selector($table, $where = false, $concat)
+        {
+          $statement = $this->cstatement( ['table' => $table, 'where' => $where] );
+
+          echo $statement;
+        }
+
+
+
 
 
 
@@ -478,44 +629,7 @@
             }
 
 
-          /* This is a function that is used practically and is a testing function as well. */
-            # prepared, this is a function meant for a prepared and then executed statement.
-            public function help($query = 'not-given', $ret = false) {
-              if ($query == 'not-given') die('the function <b>help</b> is meant to supply you with information on the query you just tried to execute, and should be used if is failing.');
-              # Getting the error info array.
-                $e = $query->errorInfo();
-                $r = []; # R = Return, returning array.
-              # Will start adding values into the Return array.
-                $r['PSM - pHelp'] = '<b>INFORMATION GATHERED FROM THE PREPARED / EXECUTED QUERY</b>';
-                $r['MYSQL eCode'] = $e[0].' - Google the meaning of the code';
-                $r['Drivr eCode'] = $e[1].'  - Error specific to the driver';
-              # Manip for getting the correct error message to display.
-                $search = [
-                  '/Table \'(.*?)\.(.*?)\' doesn\'t exist/is',
-                  '/You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near (.*?) at line (.*?)/is',
-                  '/Unknown column \'(.*?)\' in \'(.*?)\'/is',
-                  '/Column count doesn\'t match value count at row (.*?)/is'
-                ]; $replace = [
-                  'The table <b>$2</b> doesn\'t exist in the database <b>$1</b>, did you spell it right?',
-                  'There was a syntax error, if you want to combat it effectively, please seperate each SQL word into seperate lines then retry, now check <b>line: $2</b>',
-                  'The column (<b>$1</b>) in the table you tried to insert/select from into doesn\'t exist, did you spell it right?',
-                  'The amount of <b>column\'s</b> vs <b>inserting values</b> does not match up, re count them!'
-                ]; $r['Custom Mesg'] =  preg_replace($search,$replace,$e[2]);
-                $r['Raw Message'] = $e[2];
-                if ($query->execute()) $r['Query Execu'] = 'true';
-                  else $r['Query Execu'] = 'false';
-              # Management for checking if there is even an error.
-                if ($e[0] == "00000") $succ = true;
-                  else $succ = false;
 
-              # Return management.
-                if ($succ && $ret) return "query no error";
-                  else if ($succ && !$ret) {
-                    echo 'The query executed correctly - There should be no need for the error report';
-                  } else {
-                    $this->Display($r);
-                  }
-            } #
 
 
 

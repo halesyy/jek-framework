@@ -1,12 +1,17 @@
 <?php
   class IndexKontroller extends Kontroller
     {
-
-        public function options() { $this->RunHeaderFooter = true; }
-
-        public function index()
+        public function index( $parm )
           {
-            $this->c->entry()->load('main/Index');
-          }
+            $this->loader->set->title = 'Jek Templating Engine Example!';
 
+            $indexjoint = $this->loader->joint->load('Index');
+            $indexjoint->PSM_Tester();
+
+            // JTE = Jek Template Engine.
+            // $this->loader->entry->jte(
+            //   'main/TemplateEngineTest',
+            //   ['name' => 'Jack!']
+            // );
+          }
     }

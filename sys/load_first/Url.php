@@ -40,10 +40,10 @@
           else return false;
         }
     /*Same as the Segment method but instead -- Returns what you ask it to if it's false.*/
-      public static function indexsegment($segment, $return = 'Index')
+      public static function indexsegment($segment, $return = 'index')
         {
           if ( self::segment($segment) !== false ) return urldecode( self::segment($segment) );
-            else return 'index';
+            else return $return;
         }
     /*Returns array of all segments.*/
       public static function segments()
@@ -83,6 +83,14 @@
       public static function slugofunparsed($segment_data)
         {
             return explode('?', $segment_data) [0];
+        }
+    /*Function just meant to help with returning an array of paramaters after a certain slug index.*/
+      public static function getsegmentsfrom($num)
+        {
+          $return_array = [];
+          foreach (self::Segments() as $index => $slug)
+            if ($index > $num) array_push( $return_array, urldecode($slug) );
+          return $return_array;
         }
 
     /*Removes any accents from the string, then can be used for a slug.*/

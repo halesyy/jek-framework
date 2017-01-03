@@ -3,7 +3,7 @@
     public function index() {
       //Lets do some interaction!
 
-      $this->c->entry()->Load('templates/Footer');
+      $this->loader->entry()->Load('templates/Footer');
 
       $this->close_kontroller();
     }

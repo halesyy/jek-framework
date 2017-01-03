@@ -86,4 +86,25 @@
         {
           echo "<script src='$to'></script>";
         }
+
+
+
+
+
+
+
+    // Bootstap-related functions - For backend to frontend easy reporting.
+      public static function Alert($message, $type = 'warning')
+        {
+          return '<div style="margin: 10px;" class="alert alert-'.$type.' alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'.$message.'</div>';
+        }
+
+
+
+
+
+
+
+
+    //
   }

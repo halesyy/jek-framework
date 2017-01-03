@@ -4,8 +4,8 @@
   | styled.
   */
 
-  // For if you want to use this file or not.
-  $cfg['use-display-properties'] = true;
+  // For if you  want to use this file or not.
+  $cfg['use-display-properties'] = false;
 
   // Config area for the header.
   $cfg['header'] = [

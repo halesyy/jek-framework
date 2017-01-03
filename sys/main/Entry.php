@@ -22,4 +22,20 @@
           {
             echo "<b>Entry class Test called!</b>";
           }
+
+      /*JTE = JEK TEMPLTAE ENGINE.
+      Very simple engine so far to simply format variables a bit easier than calling
+      the assoc array.*/
+        public function JTE( $filename, $data = [] )
+          {
+            $location = "app/entries/{$filename}.php";
+            if ( file_exists($location) )
+              {
+                $file_contents = file_get_contents( $location );
+                foreach ( $data as $search => $replace )
+                  $file_contents = str_replace( "{{{$search}}}", $replace, $file_contents );
+                echo $file_contents;
+              }
+            else App::Error('Kontroller -> Entry -> JekTemplateEngine', "Tried to load file <b>{$location}</b> - NOT FOUND.");
+          }
     }
