@@ -41,12 +41,15 @@
     //************************************************************************************
 
     /*Constructor.*/
-      public function __construct($load_html_start)
+      public function __construct($load_html_start = [])
         {
           $this->load_html_start = $load_html_start;
           if ( in_array( Url::First(), $load_html_start ) )
             echo "<html>\n<head>\n";
         }
+
+
+
   /*If first param = first slug will run.*/
     public function When($slug, $contents)
       {
@@ -54,6 +57,8 @@
           foreach ($contents as $import_type => $import_contents)
             $this->Import( $import_type, $import_contents );
       }
+
+
 
   /*Does importing depending on the scheme type.
   SCHEME=e.g.:CSS/JS/TEMPLATE_ACCESS
@@ -64,6 +69,7 @@
 
         foreach ($to_import as $import)
         {
+          App::Log("<b>HTML_HEAD</b>: {{$scheme}} {{$import}}", 'teal');
           echo str_replace( 'IMPORT', $import, $template )."\n";
         }
       }
@@ -79,6 +85,8 @@
           array_push( $this->plugin_names, $plugin_name );
       }
 
+
+
   /*Loading the plugins if set to true from plugin name.*/
     public function LoadPlugins($load_array)
       {
@@ -92,13 +100,19 @@
               $this->Import($scheme, $import_content);
           }
       }
+
+
+
   /*Lets user load all plugins despite want.*/
     public function LoadAllPlugins()
       {
         foreach ($this->plugins as $plugin_name => $plugin_contents)
           foreach ($plugin_contents as $scheme => $import_contents)
-            $this->Import($scheme, $import_contents);
+          $this->Import($scheme, $import_contents);
       }
+
+
+
   /*Runs both the Plugins function as well as the plugin management function.*/
   public function PluginManagement($man_arr)
     {
@@ -106,12 +120,15 @@
       $this->LoadPlugins( $man_arr[1] );
     }
 
+
+
   /*Signals the end of the Head.*/
     public function End()
       {
         if ( in_array( Url::First(), $this->load_html_start ) )
-          echo "</head>\n<body>\n";
+          echo "</head>\n\n<body>\n";
       }
+
 
 
   /*For loading in Require JS and a loader file.*/

@@ -32,7 +32,7 @@ $(document).ready(function(){
       });
     },
     // Function for managing forms easily and quickly.
-    manage_form: function(form_to_bind, type, errorplace, onsuccess)
+    fuckforms: function(form_to_bind, type, errorplace, onsuccess)
     {
       $('#' + form_to_bind).bind('submit', function(event){
         event.preventDefault();

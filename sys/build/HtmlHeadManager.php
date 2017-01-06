@@ -30,7 +30,8 @@
   | IDLE. - Initialize, Define, Load & End.
   */
 
-    //Initialize.
+    // Initialize.
+    // Passed into array = slugs where <html>/<head> is generated.
     $head = new Head_Management(['index']);
 
             $head->When('index', [

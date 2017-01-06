@@ -45,29 +45,40 @@
           $this->KontrollerClassLoader();
         }
 
+      // Shorthand class loader.
+      public function Load($kontroller, $method = false, $dynamic = false)
+        {
+          $this->RouterKontrollerLoader($kontroller, $method, $dynamic);
+        }
 
       // The information the router sends to the Kontroller class to manage.
       public function RouterKontrollerLoader($kontroller, $method = false, $dynamic = false)
         {
+              App::LogBreak();
+              App::Log('Called the RouterKontrollerLoader from the Router, start management beginning', 'black');
           $kontroller_feedback = $this->KontrollerExists_Information( $kontroller );
           if ( $kontroller_feedback[0] === false )
             App::Error("<b>Router -> RouterKontrollerLoader</b>", "Tried to load Kontroller {$kontroller} but FILE not found, looking for: <b>{$kontroller_feedback[1]}</b>.");
           else
             {
+                  App::Log("File {$kontroller_feedback[1]} exists, requiring file", 'black');
               // Loading the Kontroller and loading methods.
               require_once( $kontroller_feedback[1] );
 
+                  App::Log('Calling the Kontroller Name manager (KontrollerName -> Opt Kontroller Name as wanted)', 'black');
               // Managing the location for the Kontroller file to get the actual Kontroller name.
               $kontroller = $this->ManageKontrollerName( $kontroller );
 
+                  App::Log('Creating the CURRENT_KONTROLLER variable as well as setting it in the main Kontroller Clas', 'black');
               // Setting class references & Sets.
               $_CURRENT_KONTROLLER = new $kontroller;
               $this->_CURRENT_KONTROLLER = $_CURRENT_KONTROLLER;
 
-
+                  App::Log('Dynamic Kontroller load manager, declared from Router which route to run', 'black');
               // Dynamic manager.
               if ($dynamic)
                 {
+                  App::Log('DYNAMIC KONTROLLER LOAD - Segments FROM 1 are supplied to FUNC declared from Router', 'black');
                   /*
                   | Dynamic load.
                   |
@@ -79,6 +90,7 @@
                 }
               else
                 {
+                  App::Log('NOT DYNAMIC KONTROLLER LOAD - Segments FROM 2 are supplied to FUNC segment 2', 'black');
                   /*
                   | Un-Dynamic load.
                   |
@@ -89,11 +101,18 @@
                   $parms  = Url::GetSegmentsFrom(2);
                 }
 
+                    App::Log('Call the method / supply paramaters to function declared from the DYNAMIC MANAGER', 'black');
                 // To call the method the user wants requested, or call the "fallback" function.
                 if ( method_exists( $_CURRENT_KONTROLLER, $method ) )
-                  $_CURRENT_KONTROLLER->$method( $parms );
+                  {
+                        App::Log("====CALLING $kontroller->$method() IN $kontroller CLASS====", 'green');
+                        App::LogBreak();
+                    $_CURRENT_KONTROLLER->$method( $parms );
+                  }
                 else if ( method_exists( $_CURRENT_KONTROLLER, $this->Kontroller_Fallback_Method_Name ) )
                   {
+                        App::Log("====CALLING KONTROLLER_FALLBACK_METHOD_NAME ( {$this->Kontroller_Fallback_Method_Name}() ) IN $kontroller CLASS====", 'green');
+                        App::LogBreak();
                     $method = $this->Kontroller_Fallback_Method_Name;
                     $_CURRENT_KONTROLLER->$method( $parms );
                   }
@@ -147,16 +166,26 @@
           | >> magic method that's takes in the func name and uses that as
           | >> the call method.
           */
-          $classes['psm']        = GLOBALS::GET('psm');
-          $classes['auth']       = GLOBALS::GET('auth');
+
+          // The classes taht make your Kontrollers work correctly.
+          $classes['psm']        = Globals::Get('psm');
+          $classes['auth']       = Globals::Get('auth');
           $classes['kontroller'] = $this;
           $classes['joint']      = load_class( 'joint' );
           $classes['entry']      = load_class( 'entry' );
-          $classes['set']        = load_class( 'set' );
           $classes['str']        = load_class( 'String' );
 
+          // The set-class meant to help you quickly set DOM-related... stuff!
+          // As well as the builder which is meant to help you build crucial parts of your site.
+          $classes['set']        = load_class( 'set' );
+          $classes['builder']    = load_class( 'KontrollerBuilder' );
+
+          // Less compiler and SuperCrypt class.
           $classes['lessc']      = load_class( 'lessc' );
           $classes['super']      = load_class( 'SuperCrypt' );
+
+          // Make sure you remember this is when the Kontroller gets called.
+          $classes['globals']    = Globals::Vars();
 
           $loader = new KontrollerClassManager( $classes );
           $this->loader = $loader;
@@ -189,7 +218,32 @@
 
 
 
+  class KontrollerBuilder
+    {
+      /*
+      | A small class meant to help with building the parts of the display, meant mainly for loading the
+      | HeaderKontroller and FooterKontroller.
+      */
 
+      public function __get($accessing)
+        {
+          $allowed = ['header', 'footer'];
+          if (in_array($accessing, $allowed))
+            $this->$accessing();
+          else App::Error('$this->loader->builder->'.$accessing.' called', "Method {$accessing} unknown");
+        }
+
+      public function header()
+        {
+          $kontroller = new Kontroller;
+          $kontroller->Load('main/static/HeaderKontroller', 'index', true);
+        }
+      public function footer()
+        {
+          $kontroller = new Kontroller;
+          $kontroller->Load('main/static/FooterKontroller', 'index', true);
+        }
+    }
 
 
 

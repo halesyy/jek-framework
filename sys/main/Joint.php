@@ -26,8 +26,9 @@
         }
 
     /*Loading a specific Joint.*/
-      public function __call($joint_name, $params)
+      public function __get($joint_name)
         {
+          $joint_name[0] = strtoupper($joint_name[0]);
           return $this->Load( $joint_name );
         }
 

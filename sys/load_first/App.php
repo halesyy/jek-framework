@@ -32,7 +32,13 @@
     /*This is the function to add reports to the Apps reporting system.*/
       public static function Log($msg, $color = 'green')
         {
-          array_push( self::$logs, "<b><font color='{$color}'>".$msg."</font></b>" );
+          array_push( self::$logs, "<font color='{$color}'>".$msg."</font>" );
+        }
+
+    /*Inserts a line break into the logger.*/
+      public static function LogBreak()
+        {
+          array_push( self::$logs, '<br/>' );
         }
 
     /*Loads the report made by the Application.*/
