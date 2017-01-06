@@ -54,7 +54,7 @@
       ]
     ]);
     $router->Api();
-    
+
     $router->RouteMultipleInstances([
       'index' => [
         'call'    => 'main/IndexKontroller@index',
@@ -67,8 +67,4 @@
         'dynamic' => true
       ]
     ]);
-
-
-
-
     //
