@@ -36,13 +36,12 @@
 
             $head->When('index', [
               'css' => [
-                '/public/bootstrap/css/bootstrap.min.css',
-                '/public/bootstrap/css/bootstrap-theme.min.css',
+                'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
                 '/public/css/main.css'
               ],
               'js'  => [
-                '/public/jquery/jquery.min.js',
-                '/public/bootstrap/js/bootstrap.min.js',
+                'https://code.jquery.com/jquery-3.1.1.min.js',
+                'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
                 '/public/js/main.js'
               ],
               'google_font' => [

@@ -38,7 +38,6 @@
   */
 
     $router = new Router;
-    $router->Api();
 
     // Will look at the first two inputs and decide if safe or not.
     $router->SanitizeUrl([ 0 => true,
@@ -54,14 +53,14 @@
         'force-type' => ['LETTERS', 'NUMBERS', 'SPECIALS']
       ]
     ]);
-
+    $router->Api();
+    
     $router->RouteMultipleInstances([
       'index' => [
         'call'    => 'main/IndexKontroller@index',
         'when'    => 'get',
         'dynamic' => true
       ],
-
       'home' => [
         'call'    => 'main/IndexKontroller@home',
         'when'    => 'get',
