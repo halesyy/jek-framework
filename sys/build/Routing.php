@@ -40,6 +40,20 @@
     $router = new Router;
     $router->Api();
 
+    // Will look at the first two inputs and decide if safe or not.
+    $router->SanitizeUrl([ 0 => true,
+      // A special charset in the Router Class (you can edit it)
+      // that contains all letters ALLOWED in the ENTIRE URL, not specific URLs.
+      'force-characterset' => true,
+
+      // Managing the first and second segments of the URL.
+      'first' => [
+        'force-type' => ['LETTERS']
+      ],
+      'second' => [
+        'force-type' => ['LETTERS', 'NUMBERS', 'SPECIALS']
+      ]
+    ]);
 
     $router->RouteMultipleInstances([
       'index' => [

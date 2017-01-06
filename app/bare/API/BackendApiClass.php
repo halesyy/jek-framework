@@ -107,7 +107,7 @@
             $statement = "SELECT * FROM {$table} WHERE {$column} = :look";
             $binds     = [':look' => $lookfor];
 
-            $q = $this->psm->create_query( $statement, $binds );
+            $q = $this->psm->cquery( $statement, $binds );
 
             if ( $q->rowCount() != 0 )
               {
@@ -129,8 +129,24 @@
             echo json_encode( $return );
             exit;
           }
+      // Returns error information with an alert.
+        public function Error( $message )
+          {
+            $this->Return_Packer('error', [
+              'html' => App::Alert($message, 'danger')
+            ]);
+            exit;
+          }
+      // Oops function to return a warning.
+        public function Oops($message)
+          {
+            $this->Return_Packer('warning', [
+              'html' => App::Alert($message, 'warning')
+            ]);
+            exit;
+          }
       // When the calls are done and the API call was finished correctly.
-        public function success( $message )
+        public function Success( $message )
           {
             $this->Return_Packer('success', [
               'html' => App::Alert( $message, 'success' )

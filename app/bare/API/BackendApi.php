@@ -1,28 +1,34 @@
 <?php
   /*
+  | We're trying to change the future.
+  |   > The future of forms.
+  |   > Shit... Sorry I thought this was techchrunch!
+  |   > Just a form generator, nothing special.
+  |
   | This is our backend OOP-based API.
   |
   | Any PSM calls should be made through
   | $api->psm->function_to_call()
+  |
+  | Or if you're a pro lord 9000, use Globals::Get('psm')->function_to_call();
+  | But that's ugly!
   */
 
   require_once "app/bare/API/BackendApiClass.php";
-  $api = new API(GLOBALS::GET('psm'));
+  $api = new API(Globals::Get('psm'));
 
   $api->POST([
     'index' => function($api) {
       $data = $api->s(['username', 'password']);
       $api->check_table('users', [
-        'for'    => 'asd',
+        'for'    => 'asdasd',
         'in'     => 'username',
         'report' => 'Oops! That Username Exists!',
         'unique' => 'USERNAME_IN_USE'
       ]);
-
-      $api->success('Woo! Done!');
+      $api->success("That's correct!");
     }
   ]);
-
   $api->GET([
     'index' => function($api) {
       echo 'GET index';

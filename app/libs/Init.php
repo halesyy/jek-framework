@@ -24,3 +24,6 @@
 
   //SuperCrypt class.
   include_once "{$to}/SPRCRPT/SuperCrypt.php";
+
+  //Form class.
+  include_once "{$to}/Form/Form.php";

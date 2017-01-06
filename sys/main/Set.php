@@ -26,6 +26,6 @@
       private function title($title)
         {
           echo
-            "<script>$(document).ready(function(){if ($('title').length)$('title').html('$title');else $('head').append('<title>$title</title>');});</script>";
+            "<script>$(document).ready(function(){if ($('title').length)$('title').html('$title');else $('head').append('<title>$title</title>');});</script>\n";
         }
     }

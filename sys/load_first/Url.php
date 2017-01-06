@@ -57,7 +57,7 @@
       public static function first()
         {  return self::IndexSegment(1); }
       public static function second()
-        {  return self::IndexSegment(2);  }
+        {  return str_replace( '-', '_', self::IndexSegment(2) ); }
       public static function third()
         {  return self::IndexSegment(3);  }
       public static function fourth()

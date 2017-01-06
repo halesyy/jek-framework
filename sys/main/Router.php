@@ -20,6 +20,20 @@
         // The slug that has to be used first to trigger the API to be loaded.
         public $ApiTrigger = 'api';
 
+
+        // All the characters that are allowed in the URL overall - More type-specific
+        // forcing goes on later.
+        public $force_charset = [
+          '/', '-', '=', '_', ' ',
+
+          'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+          'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+          'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+          'y', 'z',
+
+          '0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9'
+        ];
+
       //*********************************************************************************
 
       /*Constructor to instanciate the Kontroller + the CurSlug (Current Slug).*/
@@ -51,6 +65,61 @@
       | /slug1/slug2 -- Kontroller mapped to slug1 calls the function slug2.
       */
 
+      /*Method meant to sanitize the URL and make sure it's safe before proceeding.*/
+        public function SanitizeUrl($options)
+          {
+            if (isset($options[0]) && $options[0] === false) return false;
+            if (isset($options['force-characterset']) && $options['force-characterset'] === true)
+              {
+                // Will run over the URL making sure it conforms to the $this->force_charset array.
+                $url = urldecode($_SERVER['REQUEST_URI']);
+                foreach (str_split($url) as $url_char)
+                if (!in_array("{$url_char}", $this->force_charset))
+                App::Error('Sanitize Url (Overall Forcer)', "Illegal URL part <b>{$url_char}</b>");
+              }
+
+            // Now managing first and second forces.
+            if (isset($options['first']))
+              $this->Forcer( Url::Second(),
+                $this->ForceRangler($options['first']['force-type'])
+              );
+            if (isset($options['second']))
+              $this->Forcer( Url::Second(),
+                $this->ForceRangler($options['second']['force-type'])
+              );
+          }
+
+        // Takes in a numerative array and will convert keywords into arrays and combine.
+        public function ForceRangler($force_types)
+          {
+            $types = [
+              'LETTERS'  => range('a','z'),
+              'NUMBERS'  => range('0','9'),
+              'SPECIALS' => ['-','=']
+            ];
+            // Roping all the forced content wanted.
+            $rope = [];
+            foreach ($force_types as $index => $type)
+              if (in_array(strtoupper($type), array_keys($types)))
+              $rope = array_merge($rope, $types[$type]);
+            return $rope;
+          }
+
+        // Takes in a string and forces it to be any of the chars in the array.
+        public function Forcer($forcing, $to_force)
+          {
+            foreach (str_split($forcing) as $index => $url_char)
+              if (!in_array("{$url_char}", $to_force))
+              App::Error('Sanitize URL (Slug Forcer)', "Illegal URL part <b>{$url_char}</b>");
+          }
+
+
+
+
+
+
+
+
 
       /*This is the recommended-to-use function to manage all incoming data.*/
         public function RouteMultipleInstances($slug_definitions)
@@ -76,7 +145,7 @@
               }
 
             // GET MANAGER.
-            if ( $call_type == 'get' )
+            if ( strtolower($call_type) == 'get' )
               {
                 // We're gonna have to load the Kontroller!
                 $split_components = explode( '@', $to_call );
