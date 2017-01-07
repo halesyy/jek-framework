@@ -4,6 +4,10 @@
       /*
       | This is a form class meant to help aid in the creation of form's
       | and input cases for websites that re-use content oftenly.
+      |
+      | METHOD DECLARATIONS.
+      | @param TYPE (0)
+      | Information on Method.
       */
 
       // ***********************************************************************
@@ -14,17 +18,12 @@
 
       // ***********************************************************************
 
-      // Constructor for if user simply wants to generate the form from there.
-      public function __construct($makenow = false)
-        {
-          if ($makenow !== false)
-            {
-              $this->start($makenow);
-              return $this;
-            }
-        }
 
-      // If no speific methods are called, will call this method to create an element.
+      /*
+      | @param String, Array
+      | When the user calls a method that doesn't exist in the class,
+      | will use the "element" method to create a HTMLDOM element.
+      */
       public function __call($element_name, $types_array)
         {
           if (isset($types_array[0])) $ta = $types_array[0];
@@ -34,20 +33,31 @@
           return $this;
         }
 
-      // Method called when user requesting to create a new form. [$for = new Form; $form('form_id');].
+
+
+      /*
+      | @param String, Array
+      | When invocation occours ( $classinstance() ) will begin the forms creation
+      | and call the appropriate start method.
+      */
       public function __invoke($form_id = 'form', $optional_types = [])
         {
           $this->start($form_id, $optional_types);
           return $this;
         }
 
-      // Starts the form creation.
+
+
+      /*
+      | @param String, Array
+      | The appropriate method to be called when beginning your forms creation.
+      | Meant to be the first method called.
+      */
       public function start($form_id, $container_types_array = false)
         {
           if ($container_types_array === false) $container_types_array = [];
           $this->current_form_id = $form_id;
           echo "<form id=\"{$form_id}\">";
-
           $default = ['class' => 'form-container'];
           if (isset($container_types_array['class']))
             {
@@ -58,14 +68,26 @@
           $this->start_div( $merged );
         }
 
-      // Ends the form creation.
+
+
+      /*
+      | @param None
+      | Called when the form has finished being created and required ending.
+      */
       public function end()
         {
           echo "</div></form>";
           return $this;
         }
 
-      // Generates a plain HTML element - Conforming to the correct XML standards.
+
+
+      /*
+      | @param String, Array, Bool
+      | Will create a base element for HTML using the correct XML standards.
+      | - Can be used as a function itself to construct DOM elements.
+      | - BOOL Will determine if creation of element ends in ' /' or ''.
+      */
       public function element($element_name, $types_array, $is_solo = true)
         {
           if ($is_solo) $end = ' /';
@@ -231,8 +253,13 @@
           return $this;
         }
 
+
+
+
+
+
       // Generate the window.jek.fuckforms wanted layout.
-      public function generate_fuckforms($type, callable $success)
+      public function generatejs($type, callable $success)
         {
           $this->start_script();
 ?>
