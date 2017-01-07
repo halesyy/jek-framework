@@ -27,23 +27,42 @@
       // If no speific methods are called, will call this method to create an element.
       public function __call($element_name, $types_array)
         {
-          if (isset($types_array['solo'])) $is_solo = $types_array['solo']; else $is_solo = true;
-          $this->element($element_name, $types_array[0], $is_solo);
+          if (isset($types_array[0])) $ta = $types_array[0];
+          else $ta = [];
+          if (isset($ta['solo'])) { $is_solo = $ta['solo']; unset($ta['solo']); } else $is_solo = true;
+          $this->element($element_name, $ta, $is_solo);
           return $this;
         }
 
       // Method called when user requesting to create a new form. [$for = new Form; $form('form_id');].
-      public function __invoke($form_id = 'form')
+      public function __invoke($form_id = 'form', $optional_types = [])
         {
-          $this->start($form_id);
+          $this->start($form_id, $optional_types);
           return $this;
         }
 
       // Starts the form creation.
-      public function start($form_id)
+      public function start($form_id, $container_types_array = false)
         {
+          if ($container_types_array === false) $container_types_array = [];
           $this->current_form_id = $form_id;
           echo "<form id=\"{$form_id}\">";
+
+          $default = ['class' => 'form-container'];
+          if (isset($container_types_array['class']))
+            {
+              $default['class'] .= ' '.$container_types_array['class'];
+              unset($container_types_array['class']);
+            }
+          $merged = array_merge($default, $container_types_array);
+          $this->start_div( $merged );
+        }
+
+      // Ends the form creation.
+      public function end()
+        {
+          echo "</div></form>";
+          return $this;
         }
 
       // Generates a plain HTML element - Conforming to the correct XML standards.
@@ -97,7 +116,34 @@
 
 
 
+    // All bootstrap-related methods.
+      public function row()
+        {
+          $this->start_div(['class' => 'row']);
+          return $this;
+        }
+      public function endrow()
+        {
+          $this->end_div();
+          return $this;
+        }
 
+      public function half()
+        {
+          $this->start_div(['class' => 'col-lg-6 col-md-6 col-sm-12 col-xs-12']);
+          return $this;
+        }
+      public function third()
+        {
+          $this->start_div(['class' => 'col-lg-4 col-md-4 col-sm-4 col-xs-12']);
+          return $this;
+        }
+      public function endhalf()
+        { $this->end_div(); return $this; }
+      public function endthird()
+        { $this->end_div(); return $this; }
+      public function endfourth()
+        { $this->end_div(); return $this; }
 
 
 
@@ -147,6 +193,19 @@
           return $this;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
       // Called when wanting to start a JS script.
       public function start_script()
         {
@@ -176,7 +235,6 @@
       public function generate_fuckforms($type, callable $success)
         {
           $this->start_script();
-
 ?>
 $(document).ready(function(){
   window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
@@ -184,7 +242,6 @@ $(document).ready(function(){
 });
 });
 <?php
-
           $this->end_script();
         }
     }
