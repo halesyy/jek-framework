@@ -361,7 +361,7 @@
 ?>
 $(document).ready(function(){
   window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
-    <?php $success() ?>
+    <?php if (isset($success)) $success(); ?>
   });
 });
 <?php
