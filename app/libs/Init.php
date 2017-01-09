@@ -25,5 +25,8 @@
   //SuperCrypt class.
   include_once "{$to}/SPRCRPT/SuperCrypt.php";
 
+  //jTE Templating Class.
+  include_once "{$to}/jTE/jTE.php";
+
   //Form class.
   include_once "{$to}/Form/Form.php";

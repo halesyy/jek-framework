@@ -37,6 +37,7 @@
             $head->When('index', [
               'css' => [
                 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+                '/public/css/jek-core/forms.css',
                 '/public/css/main.css'
               ],
               'js'  => [

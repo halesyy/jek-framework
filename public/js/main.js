@@ -48,6 +48,7 @@ $(document).ready(function(){
           'type'  : type,
           'pdata' : $(this).serializeArray()
         }, function( ret ){
+          alert(ret);
           tdata = JSON.parse( ret );
           if (tdata.return === "success")
             {

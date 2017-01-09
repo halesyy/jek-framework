@@ -1,0 +1,107 @@
+/*
+| CSS For form-related pieces of sexiness.
+*/
+
+/*COLOR Setting - for main background.*/
+.jf-title, .jf-submit > input[type="submit"]
+  {
+    /**/
+    background-color: #4CC987;
+    color: white;
+  }
+.jf-container
+  {
+    /**/
+    background-color: #7D7E7D;
+  }
+/*FONT Setting - for the main fonts of the forms.*/
+.jf-title, .jekform input[type="text"], .jekform input[type="password"]
+  {
+    font-family: 'Lato', Arial;
+  }
+
+.jekform
+  {
+
+  }
+.jf-margin
+  {
+    margin: 10px;
+  }
+.jf-container
+  {
+    margin: 20px;
+    border-radius: 4px;
+  }
+
+
+
+.jf-title
+  {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 20px;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+
+  }
+.jf-content
+  {
+    padding: 10px;
+  }
+
+
+
+/*All margin managers.*/
+.mid-small
+  {
+    width: 30%;
+    margin-left: 35%;
+  }
+.mid-medium
+  {
+    width: 50%;
+    margin-left: 25%;
+  }
+.mid-large
+  {
+    width: 80%;
+    margin-left: 10%;
+  }
+
+
+.jf-ipt-container
+  {
+    margin: 0 20px 0 20px;
+    margin-bottom: 10px;
+  }
+
+.jekform input[type="text"], .jekform input[type="password"]
+  {
+
+    padding: 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: solid silver 1px;
+    width: 100%;
+  }
+.jf-margin-ipts input
+  {
+    margin: 10px;
+  }
+.jf-submit
+  {
+    margin: 0 20px 20px 20px;
+  }
+.jf-submit > input[type="submit"]
+  {
+    margin-top: 20px;
+    border: 0;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+    padding: 5px;
+    text-transform: uppercase;
+  }

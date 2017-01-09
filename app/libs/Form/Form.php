@@ -88,15 +88,15 @@
       | - Can be used as a function itself to construct DOM elements.
       | - BOOL Will determine if creation of element ends in ' /' or ''.
       */
-      public function element($element_name, $types_array, $is_solo = true)
+      public function element($element_name, $types_array = false, $is_solo = true)
         {
+          if ($types_array === false) $types_array = [];
           if ($is_solo) $end = ' /';
           else $end = '';
           $elm = "<{$element_name} ";
             foreach ($types_array as $key => $value)
             $elm .= "{$key}=\"{$value}\"";
           $elm .= "{$end}>";
-
           echo $elm;
           return $this;
         }
@@ -108,21 +108,42 @@
 
 
 
-      // Generator for inputs.
+      /*
+      | @param Array
+      | Shorthand function for creating an input HTML element.
+      | (Just calls the element method)
+      */
       public function input($types_array)
         {
           $this->element('input', $types_array, true);
           return $this;
         }
-      // Generator for making divs.
+
+
+
+
+      /*
+      | @param Array
+      | Creates and ends a div using the element function.
+      */
       public function start_div($types_array)
         {
           $this->element('div', $types_array, false);
           return $this;
         }
       public function end_div()
-        { echo "</div>"; }
-      // Putting the "errorplace" for users to use if wanting to use the Frontend API.
+        {
+          $this->element('/div', [], false);
+          return $this;
+        }
+
+
+
+      /*
+      | @param String
+      | Generates the errorplace to be used with the method generatejs()
+      | in this class to aid with making use of the frontend framework.
+      */
       public function errorplace($errorplace_id = false)
         {
           if ($errorplace_id === false) $errorplace_id = $this->current_form_id;
@@ -138,7 +159,12 @@
 
 
 
-    // All bootstrap-related methods.
+      /*
+      | @param None
+      | Methods to create bootstrap rows and end them,
+      | Rows are needed if you're going to be using the shorthand column
+      | methods as they're the "container" for them.
+      */
       public function row()
         {
           $this->start_div(['class' => 'row']);
@@ -150,6 +176,13 @@
           return $this;
         }
 
+
+
+      /*
+      | @param None
+      | Methods to create columns in a shorthand manor.
+      | Shorthand starting divs and adding wanted classes.
+      */
       public function half()
         {
           $this->start_div(['class' => 'col-lg-6 col-md-6 col-sm-12 col-xs-12']);
@@ -160,57 +193,120 @@
           $this->start_div(['class' => 'col-lg-4 col-md-4 col-sm-4 col-xs-12']);
           return $this;
         }
+      public function fourth()
+        {
+          $this->start_div(['class' => 'col-lg-3 col-md-3 col-sm-3 col-xs-12']);
+          return $this;
+        }
+
+
+      /*
+      | @param None
+      | These are the ending functions for columns generated for Bootstrap.
+      | Each time a new add is made there must be a new entry.
+      | Later to be re-created using the __get magic method manager.
+      */
       public function endhalf()
-        { $this->end_div(); return $this; }
+        {
+          $this->end_div(); return $this;
+        }
       public function endthird()
-        { $this->end_div(); return $this; }
+        {
+          $this->end_div(); return $this;
+        }
       public function endfourth()
-        { $this->end_div(); return $this; }
+        {
+          $this->end_div(); return $this;
+        }
+
+      /*
+      | @param None
+      | These are the junction methods when you want to end a part
+      | - The methods are to junction a created part with another part.
+      | - Ex.
+      |     row
+      |       third
+      |         input
+      |       thirdjunction
+      |         input
+      |       thirdjunction
+      |         input
+      |       endthird
+      |     endrow
+      */
+      public function halfjunction()
+        {
+          $this->endhalf();
+          $this->half();
+          return $this;
+        }
+      public function thirdjunction()
+        {
+          $this->endthird();
+          $this->third();
+          return $this;
+        }
+      public function fourthjunction()
+        {
+          $this->endfourth();
+          $this->fourth();
+          return $this;
+        }
 
 
 
       // Creates a text-input.
-      public function text($placeholder = 'Username', $name = false)
+      public function text($placeholder = 'Username', $name = false, $types_array = false)
         {
-          $this->input([
-            'type'        => 'text',
-            'placeholder' => $placeholder,
-            'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
-          ]);
+          if ($types_array === false) $types_array = [];
+          $this->start_div(['class' => 'jf-ipt-container']);
+            $this->input(array_merge([
+              'type'        => 'text',
+              'placeholder' => $placeholder,
+              'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
+            ], $types_array));
+          $this->end_div();
           return $this;
         }
 
       // Creates a password-input.
-      public function password($placeholder = 'Password', $name = false)
+      public function password($placeholder = 'Password', $name = false, $types_array = false)
         {
-          $this->input([
-            'type'        => 'password',
-            'placeholder' => $placeholder,
-            'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
-          ]);
+          if ($types_array === false) $types_array = [];
+          $this->start_div(['class' => 'jf-ipt-container']);
+            $this->input(array_merge([
+              'type'        => 'password',
+              'placeholder' => $placeholder,
+              'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
+            ], $types_array));
+          $this->end_div();
           return $this;
         }
 
-      // Creates a password-input.
-      public function email($placeholder = 'Email', $name = false)
+      // Creates a email-input.
+      public function email($placeholder = 'Email', $name = false, $types_array = false)
         {
-          $this->input([
-            'type'        => 'email',
-            'placeholder' => $placeholder,
-            'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
-          ]);
+          if ($types_array === false) $types_array = [];
+          $this->start_div(['class' => 'jf-ipt-container']);
+            $this->input(array_merge([
+              'type'        => 'email',
+              'placeholder' => $placeholder,
+              'name'        => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
+            ], $types_array));
+          $this->end_div();
           return $this;
         }
 
       // Creates the submit button on a form.
-      public function submit($placeholder = 'Submit', $name = '')
+      public function submit($placeholder = 'Submit', $name = false, $types_array = false)
         {
-          $this->start_div(['class' => 'form-submit']);
-            $this->input([
+          if ($types_array === false) $types_array = [];
+          $this->start_div(['class' => 'jf-submit']);
+            $this->input(array_merge([
               'type'  => 'submit',
               'value' => $placeholder,
-              'name'  => $name
-            ]);
+              'name'  => ($name !== false) ? $name : explode(' ',strtolower($placeholder))[0]
+            ], $types_array));
           $this->end_div();
           return $this;
         }
@@ -265,10 +361,61 @@
 ?>
 $(document).ready(function(){
   window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
-<?php $success() ?>
+    <?php $success() ?>
+  });
 });
+<?php
+          $this->end_script();
+        }
+
+      // Generate the JS in a force way without using class vars.
+      public function forcegeneratejs($type, $formid, $errorplaceid, $goto = false)
+        {
+          $this->start_script();;
+?>
+$(document).ready(function(){
+  window.jek.fuckforms('<?=$formid?>', '<?=$type?>', '<?=$errorplaceid?>', function(){
+    <?php if ($goto !== false): ?>
+      window.location.href = "#!/<?=$goto?>";
+    <?php else: ?>
+      window.location.reload();
+    <?php endif; ?>
+  });
 });
 <?php
           $this->end_script();
         }
     }
+
+
+
+    /*
+    | Global fucntions that need to be in the scope for other classes to use.
+    | Such as CSRF generation, and anything form-related.
+    |
+    | All of these functions are built for the creation, checking is done from the
+    | API for auth.
+    */
+
+
+    function csrf_generate()
+      {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:=;,.[]{}\_+-';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+          for ($i = 0; $i < 128; $i++)
+          $randomString .= $characters[rand(0, $charactersLength - 1)];
+        return $_SESSION['csrf_token'] = $randomString;
+      }
+
+
+    function csrf_make($return = false)
+      {
+        $token = csrf_generate();
+        $ipt   = "<input type='hidden' name='token' value='{$token}' />";
+        if ($return) return $ipt; else echo $ipt;
+      }
+
+
+
+    #

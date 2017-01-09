@@ -21,12 +21,11 @@
     'index' => function($api) {
       $data = $api->s(['username', 'password']);
       $api->check_table('users', [
-        'for'    => 'asdasd',
+        'for'    => $data['username'],
         'in'     => 'username',
         'report' => 'Oops! That Username Exists!',
         'unique' => 'USERNAME_IN_USE'
       ]);
-      $api->success("That's correct!");
     }
   ]);
   $api->GET([

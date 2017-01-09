@@ -59,10 +59,11 @@
       // and have to sanitize the datab given to you.
       public function s($force = false)
         {
-          if (!$force) $this->APIError('Sanitize function called [s()]', 'Please use a force filter array as the first paramater - nothing supplied');
+          if (!$force || !is_array($force)) $this->APIError('Sanitize function called [s()]', 'Please use a force filter array as the first paramater - nothing supplied');
           /*
           | This function is used if there is $('#form').serializeArray()
           */
+          $force = array_merge(['token'], $force);
           // Makes sure thse PDATA is set.
           if (isset($_POST['pdata'])) $pdata = $_POST['pdata'];
           else $this->APIError('Sanitize [s()] function called', 'No PDATA given.');

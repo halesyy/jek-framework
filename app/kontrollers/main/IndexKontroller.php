@@ -5,6 +5,10 @@
           {
             $this->loader->set->title = 'Jek Templating Engine Example!';
 
-            $this->loader->entry->load('main/Home');
+            $this->loader->entry->JTE('main/Home', [
+              'name1' => 'jack',
+              'name2' => 'sami',
+              'age'   => '15'
+            ]);
           }
     }
