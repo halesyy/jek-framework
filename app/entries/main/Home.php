@@ -6,7 +6,7 @@
       Login
     </div>
     <div class="jf-content">
-      
+
       <@> CSRF safety
       {{ csrf_make() }}
 
@@ -18,7 +18,7 @@
       <@> Form management
       {{{ Form, Errorplace, form }}}
       {{{ Form, ForceGenerateJs, index, form, form-errorplace, home }}}
-      
+
     </div>
   </form>
-</form>
+</div>

@@ -355,7 +355,7 @@
 
 
       // Generate the window.jek.fuckforms wanted layout.
-      public function generatejs($type, callable $success)
+      public function generatejs($type, callable $success = null)
         {
           $this->start_script();
 ?>
