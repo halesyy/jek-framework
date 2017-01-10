@@ -88,8 +88,8 @@
   | ------------------------------------------------------------------------------------
   | QUICK RUN THROUGH ON CONSEPTS OF THIS FRAMEWORK.
   | ------------------------------------------------------------------------------------
-  | @NOTE Since this was written, lots of the framework has changed, so please wait
-  | around for new documentation.
+  | @NOTE Since this was written, lots of the framework has changed - so please wait
+  | around for new documentation and stuffsies.
   |
   | A normal (most) framework runs off MVC (Model -> View -> Controller), which is the
   | core of this framework, but the names have been re-written, so:
