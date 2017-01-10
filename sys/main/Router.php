@@ -24,7 +24,7 @@
         // All the characters that are allowed in the URL overall - More type-specific
         // forcing goes on later.
         public $force_charset = [
-          '/', '-', '=', '_', ' ',
+          '/', '-', '=', '_', ' ', '.',
 
           'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
           'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
