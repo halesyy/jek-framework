@@ -1,6 +1,8 @@
 <?php
-  ob_start();
   session_start();
+
+  $_GET['XDEBUG_PROFILE'] = true;
+
   /*
     Dedicated, passion-driven from the amazing ❤ Kayla ❤ xx
 
@@ -100,8 +102,16 @@
 
   //Each page load loads the Init file.
 
+
+
+
+
+
   require_once "sys/Init.php";
 
 
-  ob_flush();
+
+
+
+
   //

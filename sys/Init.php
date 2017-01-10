@@ -2,7 +2,7 @@
   /*
     File for initializing most of the components for JEK.
   */
-
+  echo "{$_SESSION['csrf_token']}  1\n\n\n";
     //Loading all functions/classes/scripts that are needed to be loaded first.
       foreach ( glob( 'sys/load_first/*.php' ) as $inc )
       include_once($inc);
@@ -26,7 +26,7 @@
 
     //Loading all main classes in system.
       foreach ( glob('sys/main/*.php') as $inc )
-        include_once($inc);
+      include_once($inc);
             App::Log('Finished loading all \'main\' JEK Framework classes', 'green');
 
     //Loading all our libraries we want.
@@ -34,11 +34,14 @@
       include_once "app/libs/Init.php";
             App::Log('Finished loading Libraries from folder <b>app/libs/Init.php</b>', 'blue');
 
+    echo "{$_SESSION['csrf_token']}  2\n\n\n";
     //Loading the routes to determine the corr. Kontroller.
       $cur = Url::First();
       include_once "sys/build/Routing.php";
             App::Log("Finished Router execution, ran where first index = {$cur}", 'orange');
             App::LogBreak();
+
+    echo "{$_SESSION['csrf_token']}  3\n\n\n";
 
     //Log the finish of this file.
             App::Log('Finished application initialization, <b>no errors encountered</b>', 'red');

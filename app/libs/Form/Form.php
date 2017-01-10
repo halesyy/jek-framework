@@ -398,20 +398,21 @@ $(document).ready(function(){
     */
 
 
-    function csrf_generate()
+    function generate_token()
       {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:=;,.[]{}\_+-';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-          for ($i = 0; $i < 128; $i++)
-          $randomString .= $characters[rand(0, $charactersLength - 1)];
-        return $_SESSION['csrf_token'] = $randomString;
+        $charset     = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:=;,.[]{}_+-';
+        $charset_len = strlen($charset) - 1;
+        $csrf_token  = '';
+          for ($i = 0; $i < 32; $i++)
+          $csrf_token .= $charset[rand(0, $charset_len)];
+        return $csrf_token;
       }
 
 
     function csrf_make($return = false)
       {
-        $token = csrf_generate();
+        $token = generate_token();
+        $_SESSION['csrf_token'] = $token;
         $ipt   = "<input type='hidden' name='token' value='{$token}' />";
         if ($return) return $ipt; else echo $ipt;
       }

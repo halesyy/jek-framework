@@ -14,6 +14,15 @@
 
         public $random;
 
+        /*
+        | @var Bool
+        | If this is set to TRUE, when building files using
+        | the jTE engine, will parse in-built PHP before actually
+        | parsing and using the engine.
+        | If set to FALSE, will read the file as its raw contents.
+        */
+        public $parse_inline_php = false;
+
       // ***************************************************************
 
 
@@ -31,9 +40,12 @@
               // Setting of variables that are going to be used for PHP itself.
                 $form = new Form;
               // Gathering page data by parsing the PHP file.
-                ob_start();
-                include_once "{$filename}";
-                $content = ob_get_clean();
+                if ($this->parse_inline_php)
+                  {
+                    ob_start();
+                    include_once "{$filename}";
+                    $content = ob_get_clean();
+                  } else $content = file_get_contents($filename);
               // Runs the Interpreter.
                 $this->interpreter($content, $data);
             }
@@ -54,32 +66,12 @@
         {
           // Will call appropriate methods to get new data sets back
           // containing managed new-data.
-            $content = $this->function_manager( $content );
+            // $content = $this->function_manager( $content );
             $content = $this->variable_manager( $content, $data );
           // This function manages reconstruction of entire page, so must be at end. (Reconstruct and output)
             $content = $this->class_shorthand_manager( $content );
         }
 
-
-
-      /*
-      | @param String/Blob
-      | Method to look in the content for functions to be called.
-      | Such as {{ csrf_make() }} would call the function csrf_make();
-      */
-      public function function_manager($content)
-        {
-          $func_lookfor_replacer = [
-            'csrf_make' => csrf_make(true)
-          ];
-          $search = $replace = [];
-            foreach ($func_lookfor_replacer as $function_name => $replacer):
-              array_push($search,  '/\{\{\s?' . $function_name . '\(\)\s?\}\}/is');
-              array_push($replace, $replacer);
-            endforeach;
-          $content = preg_replace($search, $replace, $content);
-          return $content;
-        }
 
 
       /*
@@ -102,14 +94,36 @@
           foreach (explode("\n", $content) as $line)
             {
               // Remove whitespace.
-              $line = ltrim($line);
-              $line = rtrim($line);
+                $line = ltrim($line);
+                $line = rtrim($line);
+
+              // Managing function calls.
+                if (isset($line[0], $line[1]))
+                  if ($line[0] . $line[1] . $line[2] === '{{ ')
+                    {
+                      // This is well after the var-replacer, so this has to be a function!
+                      // Getting the functions name.
+                      $line = str_replace(['{{', '}}'], ['', ''], $line);
+                      $line = rtrim(ltrim($line));
+                      if ($line[strlen($line)-2] . $line[strlen($line)-1] === '()')
+                        {
+                          $function_name = preg_replace( "/(.*?)\(\)/is", '$1', $line );
+                          // if (function_exists($function_name))
+                          // {
+                            $function_name();
+                            $line = '';
+                          // }
+                          // else App::Error("jTE -> Call '<b>{$function_name}()</b>'", 'Function not exist, make sure it does.');
+                        }
+                    }
+
               // Managing possible comments.
                 if (isset($line[0], $line[1], $line[2]))
                   {
                     if ($line[0] . $line[1] . $line[2] === '<@>')
                     $line = '';
                   }
+
               // Managing possible classes.
                 if (isset($line[0], $line[1], $line[2]))
                   if ($line[0] . $line[1] . $line[2] === '{{{')
@@ -119,9 +133,7 @@
                     $pieces = explode(',', $line);
                     // Removing whitespace from each piece of aray.
                     foreach ($pieces as $index => $piece)
-                      {
-                        $pieces[$index] = rtrim(ltrim($piece));
-                      }
+                    $pieces[$index] = rtrim(ltrim($piece));
                     // Gets the class the user wants to use then pulls from the array.
                     $class  = rtrim(ltrim( $pieces[0], '(' ), ')');
                     $class  = $classes[$class];

@@ -8,7 +8,9 @@
             $this->loader->entry->JTE('main/Home', [
               'name1' => 'jack',
               'name2' => 'sami',
-              'age'   => '15'
+              'age'   => '15',
+
+              'csrf_token' => csrf_make(true)
             ]);
           }
     }

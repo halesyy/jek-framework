@@ -5,8 +5,6 @@ $(document).ready(function(){
   window.jek =
   {
     placeatme: $('#content'),
-
-
     // Function to initialize the hashchange loader.
     initialize: function()
     {
@@ -16,8 +14,6 @@ $(document).ready(function(){
         window.jek.pageloader();
       });
     },
-
-
     // Manages the new URI and loads the page required.
     pageloader: function()
     {
@@ -28,8 +24,6 @@ $(document).ready(function(){
         })
       });
     },
-
-
     // Meant to manage the first load of the server - ex. refresh time, etc...
     firstload: function()
     {
@@ -37,8 +31,6 @@ $(document).ready(function(){
         window.jek.placeatme.html( body );
       });
     },
-
-
     // Function for managing forms easily and quickly.
     fuckforms: function(form_to_bind, type, errorplace, onsuccess)
     {
@@ -49,25 +41,23 @@ $(document).ready(function(){
           'pdata' : $(this).serializeArray()
         }, function( ret ){
           alert(ret);
-          tdata = JSON.parse( ret );
-          if (tdata.return === "success")
-            {
-              $('#' + errorplace).html( tdata.html );
-              onsuccess();
-            }
-          else
-            {
-              $('#' + errorplace).html( tdata.html );
-            }
+          // tdata = JSON.parse( ret );
+          // if (tdata.return === "success")
+          //   {
+          //     $('#' + errorplace).html( tdata.html );
+          //     onsuccess();
+          //   }
+          // else
+          //   {
+          //     $('#' + errorplace).html( tdata.html );
+          //   }
         });
       });
     }
   };
-
   // Initializes class.
   window.jek.initialize();
 });
-
 /*
   A normal POST send to the APIS is done like:
 

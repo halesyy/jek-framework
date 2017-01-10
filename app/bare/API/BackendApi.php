@@ -26,6 +26,10 @@
         'report' => 'Oops! That Username Exists!',
         'unique' => 'USERNAME_IN_USE'
       ]);
+    },
+    'auth_test' => function ($api) {
+      $data = $api->s(['username', 'password']);
+      echo 'This was the API test';
     }
   ]);
   $api->GET([
