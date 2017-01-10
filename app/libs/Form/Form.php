@@ -411,9 +411,6 @@ $(document).ready(function(){
 
     function csrf_make($return = false)
       {
-        if (!isset($_SESSION['CALLS_FROM'])) $_SESSION['CALLS_FROM'] = [];
-        array_push( $_SESSION['CALLS_FROM'], $_SERVER['REQUEST_URI'] );
-
         $token = generate_token();
         $_SESSION['csrf_token'] = $token;
         $ipt   = "<input type='hidden' name='token' value='{$token}' />";
