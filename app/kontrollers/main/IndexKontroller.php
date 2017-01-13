@@ -22,13 +22,13 @@
 
   class IndexKontroller extends Kontroller
     {
-        public function index( $parm )
+        public function index()
           {
             // Incharge of supplying all of the FIRSTLOAD data.
             $this->loader->set->title = 'JEKF';
             // Loading the header and default page content.
             // $this->loader->builder->header;
-              $this->loader->entry->JTE('main/Index', [
+              $this->loader->entry->render('main/Index', [
                 'name' => 'jack'
               ]);
             // $this->loader->builder->footer;

@@ -69,6 +69,10 @@
             }
           else App::Error('Kontroller -> Entry -> JekTemplateEngine', "Tried to load file <b>{$location}</b> - NOT FOUND.");
       }
+    public function render($filename, $data = [], $type = 'php')
+      {
+        $this->JTE($filename, $data, $type);
+      }
 
 
 

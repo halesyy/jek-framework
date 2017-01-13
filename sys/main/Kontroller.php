@@ -168,24 +168,20 @@
           */
 
           // The classes taht make your Kontrollers work correctly.
-          $classes['psm']        = Globals::Get('psm');
-          $classes['auth']       = Globals::Get('auth');
-          $classes['kontroller'] = $this;
-          $classes['joint']      = load_class( 'joint' );
-          $classes['entry']      = load_class( 'entry' );
-          $classes['str']        = load_class( 'String' );
+          $classes = [
+            'psm' =>     Globals::Get('psm'),
+            'auth' =>    Globals::Get('auth'),
+            'kontroller' => $this,
+            'joint' =>   load_class('joint'),
+            'entry' =>   load_class('entry'),
+            'str' =>     load_class('String'),
 
-          // The set-class meant to help you quickly set DOM-related... stuff!
-          // As well as the builder which is meant to help you build crucial parts of your site.
-          $classes['set']        = load_class( 'set' );
-          $classes['builder']    = load_class( 'KontrollerBuilder' );
+            'set' =>     load_class('set'),
+            'builder' => load_class('KontrollerBuilder'),
 
-          // Less compiler and SuperCrypt class.
-          $classes['lessc']      = load_class( 'lessc' );
-          $classes['super']      = load_class( 'SuperCrypt' );
-
-          // Make sure you remember this is when the Kontroller gets called.
-          $classes['globals']    = Globals::Vars();
+            'super' =>   load_class('SuperCrypt'),
+            'globals' => Globals::Vars()
+          ];
 
           $loader = new KontrollerClassManager( $classes );
           $this->loader = $loader;

@@ -1,7 +1,3 @@
-@setter
-  signedin = SESSION.signedin
-@setter
-
 <body style="background-color: white;"></body>
 
 <div class="jf-container mid-small" style="margin-top: 200px;">

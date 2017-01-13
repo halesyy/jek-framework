@@ -123,6 +123,9 @@
                     include_once "{$filename}";
                     $content = ob_get_clean();
                   } else $content = file_get_contents($filename);
+              // Adding the content from the Setter first.
+                $setter = (file_exists( "app/entries/Setter.php" )) ? file_get_contents("app/entries/Setter.php") : '';
+                $content = $setter.$content;
               // Runs the Interpreter.
                 $this->interpreter($content);
             }

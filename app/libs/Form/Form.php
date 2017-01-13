@@ -358,13 +358,13 @@
       public function generatejs($type, callable $success = null)
         {
           $this->start_script();
-?>
-$(document).ready(function(){
-  window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
-    <?php if (isset($success)) $success(); ?>
-  });
-});
-<?php
+            ?>
+            $(document).ready(function(){
+              window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
+                <?php if (isset($success)) $success(); ?>
+              });
+            });
+            <?php
           $this->end_script();
         }
 
@@ -372,17 +372,17 @@ $(document).ready(function(){
       public function forcegeneratejs($type, $formid, $errorplaceid, $goto = false)
         {
           $this->start_script();;
-?>
-$(document).ready(function(){
-  window.jek.fuckforms('<?=$formid?>', '<?=$type?>', '<?=$errorplaceid?>', function(){
-    <?php if ($goto !== false): ?>
-      window.location.href = "#!/<?=$goto?>";
-    <?php else: ?>
-      window.location.reload();
-    <?php endif; ?>
-  });
-});
-<?php
+            ?>
+            $(document).ready(function(){
+              window.jek.fuckforms('<?=$formid?>', '<?=$type?>', '<?=$errorplaceid?>', function(){
+                <?php if ($goto !== false): ?>
+                  window.location.href = "#!/<?=$goto?>";
+                <?php else: ?>
+                  window.location.reload();
+                <?php endif; ?>
+              });
+            });
+            <?php
           $this->end_script();
         }
     }
