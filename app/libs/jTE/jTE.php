@@ -13,6 +13,15 @@
       // ***************************************************************
 
         /*
+        | @vars Bool, Bool.
+        | All vars related to if-statements and their clauses
+        | as well as execution-changes.
+        */
+        public $in_if_mode      = false;
+        public $execute_if_code = false;
+
+
+        /*
         | @var Array | Contains Classes
         | Contains the classes that are triggereable by the LBL
         | interpreter.
@@ -60,7 +69,7 @@
         | parsing and using the engine.
         | If set to FALSE, will read the file as its raw contents.
         */
-        public $parse_inline_php = false;
+        public $parse_inline_php = true;
 
       // ***************************************************************
 
@@ -75,8 +84,8 @@
             'JTE'  => $this
           ];
           $this->shorthand_setter_vars = [
-            'session' => $_SESSION,
-            's'       => $_SESSION
+            'session' => &$_SESSION,
+            's'       => &$_SESSION
           ];
         }
 
@@ -149,7 +158,7 @@
       */
       public function lbl_management($content, $debug = false)
         {
-          if (true)
+          if ($debug)
             {
               echo "<pre>", $content ,"</pre>";
               echo "<pre>", print_r(explode("\n", $content)) ,"</pre>";
@@ -163,12 +172,16 @@
               // Managing possible comments.
                 $line = $this->comment_manager($line);
 
-              // Managing importing.
+              // Managing "@keyword second" triggers in parse.
                 $line = $this->keyword_line_manager($line);
 
               // Managing if using setter mode to set vars for easier manip later on.
                 if ($this->in_setter_mode && $line !== '')
                 $line = $this->setter_mode_manager($line);
+
+              // Managing if using the if mode to output if statements or kill current line.
+                if ($this->in_if_mode && !$this->execute_if_code)
+                $line = '';
 
               // Managing function calls.
                 $line = $this->function_call_manager($line);
@@ -245,29 +258,25 @@
           {
             $pieces = explode(' = ', $line);
             if (count($pieces) != 2) App::Error('JTE Variable Setter', 'Not one <b>" = "</b> in var setting. (@ Line "<b>'.$line.'</b>")');
-
             $varname = $pieces[0];
             $toparse = $pieces[1];
-
-            if (explode('.', $toparse) == 1)
+            // There's more to this puzzle! The exploded part to the right = array accessor.
+            $parse_splits = explode('.', $pieces[1]);
+            $vardata_parent = $parse_splits[0];
+            $vardata_child  = $parse_splits[1];
+            // If the string to lower version of the vardata parent is in the array keys of
+            // the shorthand setter vars, venture forth!
+            if (in_array( strtolower($vardata_parent), array_keys($this->shorthand_setter_vars)) )
               {
-                // Setting of var itself, $varname = $toparse.
-                $vardata = $toparse;
+                // Checks if from shorthand var the child is part of array, if so sets true, if not sets false.
+                $official_data = (isset(
+                  $this->shorthand_setter_vars
+                    [ strtolower($vardata_parent) ]
+                    [ strtolower($vardata_child) ]
+                )) ? true : false;
+                $this->official_setter_vars[$varname] = $official_data;
               }
-            else
-              {
-                // There's more to this puzzle! The exploded part to the right = array accessor.
-                $parse_splits = explode('.', $pieces[1]);
-                $vardata_parent = $parse_splits[0];
-                $vardata_child  = $parse_splits[1];
-
-                // If the string to lower version of the vardata parent is in the array keys of
-                // the shorthand setter vars, venture forth!
-                if (in_array( strtolower($vardata_parent), array_keys($this->shorthand_setter_vars)) )
-                  {
-                    $this->shorthand_setter_vars[$vardata_parent][$vardata_child];
-                  }
-              }
+            return '';
           }
 
 
@@ -292,22 +301,49 @@
             $keyword = (isset($pieces[0])) ? $keyword = $pieces[0] : $keyword = '';
             $loading = (isset($pieces[1])) ? $loading = $pieces[1] : $loading = '';
 
-            // Managing.
-            if ($keyword === 'import' || $keyword === 'include' || $keyword === 'require')
-            {
-              if (in_array($loading, array_keys($this->import_keywords)))
-                {
-                  $loading = $this->import_keywords[ $loading ];
-                  require_once( "app/entries/" . $loading );
-                  return '';
-                }
-              else App::Error('JTE External Importer', "Keyword unknown <b>\"$loading\"</b>, please check the jTE class variable (public \$keywords)");
-            }
-            else if ($keyword == 'setter')
-            {
-              $this->in_setter_mode = !$this->in_setter_mode;
-              return '';
-            }
+            switch ($keyword):
+              // Managing importing triggers.
+              case 'import':
+                if (in_array($loading, array_keys($this->import_keywords)))
+                  {
+                    $loading = $this->import_keywords[ $loading ];
+                    require_once( "app/entries/" . $loading );
+                    return '';
+                  }
+                else App::Error('JTE External Importer', "Keyword unknown <b>\"$loading\"</b>, please check the jTE class variable (public \$keywords)");
+              break;
+
+              // Managing the setter trigger.
+              case 'setter':
+                $this->in_setter_mode = !$this->in_setter_mode;
+                return '';
+              break;
+
+              // Managing starting of an if trigger statement.
+              case 'if':
+                if ($loading === '')
+                App::Error('JTE If starter', 'No conditional given');
+                else if (!in_array( $loading, array_keys($this->official_setter_vars) ))
+                App::Error('JTE If starter', 'No official var given for the trigger <b>"'.$loading.'"</b>');
+                $this->execute_if_code = $this->official_setter_vars[$loading];
+                $this->in_if_mode = true;
+              break;
+
+              // Managing a swap of if outputter.
+              case 'else':
+                $this->execute_if_code = !$this->execute_if_code;
+              break;
+
+              // Managing the end of an if statement running.
+              case 'endif':
+                $this->in_if_mode = false;
+              break;
+
+              // Managing a shorthand typeable trigger to kill a session.
+              case 'killsession' OR 'ks':
+                session_unset();
+              break;
+            endswitch;
           } else return $line;
         }
 
