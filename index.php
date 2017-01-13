@@ -2,8 +2,10 @@
   ob_start();
   session_start();
 
+
   /*
-    Dedicated, passion-driven from the amazing ❤ Kayla ❤ xx [Cool little graphics cause why not go here]
+    Dedicated, passion-driven from the amazing ❤ Kayla ❤ xx
+    [Cool little graphics cause why not go here]
 
           .---.
           |   |                                                         .---.

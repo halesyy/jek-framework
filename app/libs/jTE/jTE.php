@@ -12,7 +12,46 @@
 
       // ***************************************************************
 
-        public $random;
+        /*
+        | @var Array | Contains Classes
+        | Contains the classes that are triggereable by the LBL
+        | interpreter.
+        */
+        public $classes = [];
+
+        /*
+        | @var Array
+        | Contains the current rendereing pages data array,
+        | containinig varnames and vardata as such.
+        */
+        public $data = [];
+
+        /*
+        | @var Bool
+        | This is the boolean variable to declare whether the
+        | framework page being rendered is in "SETTING" mode
+        | or not, from default it's on FALSE, therefore to
+        | trigger this mode you have to use the @setter
+        | on a single line to initialize setter = true,
+        | then call again to set setter = false.
+        */
+        public $in_setter_mode = false;
+
+        /*
+        | @var Array
+        | These are the "@import X" keywords, they're meant to
+        | point to a specific filename IN the entry folder,
+        | so if you say "header => Header.php", will import
+        | /app/entries/Header.php, so don't do the true path!
+        |
+        | After the keywords are checked, will assume keyword
+        | is a true path and attempt to load that in, if both
+        | don't work, will simply output a core error message.
+        */
+        public $import_keywords = [
+          'header' => 'main/static/Header.php',
+          'footer' => 'main/static/Footer.php'
+        ];
 
         /*
         | @var Bool
@@ -25,6 +64,33 @@
 
       // ***************************************************************
 
+      /*
+      | @param None
+      | Meant to set the classes triggerable by the LBL interpreter.
+      */
+      public function __construct()
+        {
+          $this->classes = [
+            'Form' => load_class('Form'),
+            'JTE'  => $this
+          ];
+          $this->shorthand_setter_vars = [
+            'session' => $_SESSION,
+            's'       => $_SESSION
+          ];
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
       /*
       | @param String, Array
@@ -35,6 +101,8 @@
       */
       public function file($filename, $data = [])
         {
+          $this->data = $data;
+
           if (file_exists( $filename ))
             {
               // Setting of variables that are going to be used for PHP itself.
@@ -47,10 +115,13 @@
                     $content = ob_get_clean();
                   } else $content = file_get_contents($filename);
               // Runs the Interpreter.
-                $this->interpreter($content, $data);
+                $this->interpreter($content);
             }
           else App::Error('jTE File Compile Called', "<b>{$filename}</b> not exist");
         }
+
+
+
 
       /*
       | @param String, Array
@@ -62,93 +133,52 @@
       | ************************************************************
       | CALL CLASS -> GET CONTENT -> INTERPRETER TO MANAGE DATA.
       */
-      public function interpreter($content, $data = [])
+      public function interpreter($content)
         {
           // Will call appropriate methods to get new data sets back
           // containing managed new-data.
-            // $content = $this->function_manager( $content );
-            $content = $this->variable_manager( $content, $data );
+            $content = $this->variable_manager( $content );
           // This function manages reconstruction of entire page, so must be at end. (Reconstruct and output)
-            $content = $this->class_shorthand_manager( $content );
+            $content = $this->lbl_management( $content );
         }
-
-
 
       /*
       | @param String/Blob
       | Will manage all of the {{{ (Class): Func, Param1, Param2 }}}
       | calls in the Entry.
       */
-      public function class_shorthand_manager($content)
+      public function lbl_management($content, $debug = false)
         {
-          // The called (Class):, Form = (Form): (...)
-          $classes = [
-            'Form' => load_class('Form')
-          ];
-
-          // Cause of the differental calls, the content has to be looped then put
-          // back together as looping to make the class system work as smoothly as
-          // possible.
-
-          $reconstructor = '';
-          foreach (explode("\n", $content) as $line)
+          if (true)
             {
-              // Remove whitespace.
-                $line = ltrim($line);
-                $line = rtrim($line);
-
-              // Managing function calls.
-                if (isset($line[0], $line[1]))
-                  if ($line[0] . $line[1] . $line[2] === '{{ ')
-                    {
-                      // This is well after the var-replacer, so this has to be a function!
-                      // Getting the functions name.
-                      $line = str_replace(['{{', '}}'], ['', ''], $line);
-                      $line = rtrim(ltrim($line));
-                      if ($line[strlen($line)-2] . $line[strlen($line)-1] === '()')
-                        {
-                          $function_name = preg_replace( "/(.*?)\(\)/is", '$1', $line );
-                          // if (function_exists($function_name))
-                          // {
-                            $function_name();
-                            $line = '';
-                          // }
-                          // else App::Error("jTE -> Call '<b>{$function_name}()</b>'", 'Function not exist, make sure it does.');
-                        }
-                    }
-
-              // Managing possible comments.
-                if (isset($line[0], $line[1], $line[2]))
-                  {
-                    if ($line[0] . $line[1] . $line[2] === '<@>')
-                    $line = '';
-                  }
-
-              // Managing possible classes.
-                if (isset($line[0], $line[1], $line[2]))
-                  if ($line[0] . $line[1] . $line[2] === '{{{')
-                  {
-                    // Removes {{{}}} from string.
-                    $line   = preg_replace( '/\{\{\{(.*?)\}\}\}/is', '$1', $line );
-                    $pieces = explode(',', $line);
-                    // Removing whitespace from each piece of aray.
-                    foreach ($pieces as $index => $piece)
-                    $pieces[$index] = rtrim(ltrim($piece));
-                    // Gets the class the user wants to use then pulls from the array.
-                    $class  = rtrim(ltrim( $pieces[0], '(' ), ')');
-                    $class  = $classes[$class];
-                    // Gets method.
-                    $method = $pieces[1];
-                    // Now managing the input & call of class method.
-                    for ($i = 2; $i <= 7; $i++)
-                    if (!isset($pieces[$i])) $pieces[$i] = false;
-                    // Call.
-                    $class->$method( $pieces[2], $pieces[3], $pieces[4], $pieces[5], $pieces[6], $pieces[7] );
-                  }
-                else echo $line;
+              echo "<pre>", $content ,"</pre>";
+              echo "<pre>", print_r(explode("\n", $content)) ,"</pre>";
             }
 
-          // return $content;
+          foreach (explode("\n", $content) as $linenum => $line)
+            {
+              // Remove whitespace.
+                $line = rtrim(ltrim($line));
+
+              // Managing possible comments.
+                $line = $this->comment_manager($line);
+
+              // Managing importing.
+                $line = $this->keyword_line_manager($line);
+
+              // Managing if using setter mode to set vars for easier manip later on.
+                if ($this->in_setter_mode && $line !== '')
+                $line = $this->setter_mode_manager($line);
+
+              // Managing function calls.
+                $line = $this->function_call_manager($line);
+
+              // Managing possible classes.
+                $line = $this->class_manager($line);
+
+              // Outputting the line after it was parsed.
+                echo $line;
+            }
         }
 
 
@@ -160,8 +190,10 @@
       | Stack trace revolves around creating a preg-replacable search/replace
       | arrays to then replace all variables.
       */
-      public function variable_manager($content, $data = [])
+      public function variable_manager($content)
         {
+          $data = $this->data;
+
           $search  = [];
           $replace = [];
 
@@ -182,6 +214,185 @@
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*
+        | @param String
+        | Takes in a line of content and parses it when usign the setter
+        | mode toggled by a single line of "@setter", will parse this
+        | as a variable for the internal class.
+        |
+        | Line has to be managed as a varset.
+        */
+        public $official_setter_vars = [];
+        public $shorthand_vars = []; // set in constructor.
+
+        public function setter_mode_manager($line)
+          {
+            $pieces = explode(' = ', $line);
+            if (count($pieces) != 2) App::Error('JTE Variable Setter', 'Not one <b>" = "</b> in var setting. (@ Line "<b>'.$line.'</b>")');
+
+            $varname = $pieces[0];
+            $toparse = $pieces[1];
+
+            if (explode('.', $toparse) == 1)
+              {
+                // Setting of var itself, $varname = $toparse.
+                $vardata = $toparse;
+              }
+            else
+              {
+                // There's more to this puzzle! The exploded part to the right = array accessor.
+                $parse_splits = explode('.', $pieces[1]);
+                $vardata_parent = $parse_splits[0];
+                $vardata_child  = $parse_splits[1];
+
+                // If the string to lower version of the vardata parent is in the array keys of
+                // the shorthand setter vars, venture forth!
+                if (in_array( strtolower($vardata_parent), array_keys($this->shorthand_setter_vars)) )
+                  {
+                    $this->shorthand_setter_vars[$vardata_parent][$vardata_child];
+                  }
+              }
+          }
+
+
+
+
+        /*
+        | @param String/Blob
+        | Reconstructs the content and manages the imports and @KEYWORDS.
+        | Reacting to imports is related to the public variable in
+        | the setting area, look there for more information on keywords
+        | that can be used.
+        */
+        public function keyword_line_manager($line)
+        {
+          // Checks if line is matching keyword (@).
+          if (isset($line[0]) && $line[0] == '@')
+          {
+            $line = ltrim(rtrim($line, ')'), '(');
+            $line = ltrim($line, '@');
+            $pieces = explode(' ',$line);
+            // Splits and gets the keyword and toload.
+            $keyword = (isset($pieces[0])) ? $keyword = $pieces[0] : $keyword = '';
+            $loading = (isset($pieces[1])) ? $loading = $pieces[1] : $loading = '';
+
+            // Managing.
+            if ($keyword === 'import' || $keyword === 'include' || $keyword === 'require')
+            {
+              if (in_array($loading, array_keys($this->import_keywords)))
+                {
+                  $loading = $this->import_keywords[ $loading ];
+                  require_once( "app/entries/" . $loading );
+                  return '';
+                }
+              else App::Error('JTE External Importer', "Keyword unknown <b>\"$loading\"</b>, please check the jTE class variable (public \$keywords)");
+            }
+            else if ($keyword == 'setter')
+            {
+              $this->in_setter_mode = !$this->in_setter_mode;
+              return '';
+            }
+          } else return $line;
+        }
+
+
+
+
+        /*
+        | @param String
+        | Manages if the current line is a comment or not, will return
+        | an empty string if so or return the line if it's not a comment.
+        */
+        public function comment_manager($line)
+        {
+          if (isset($line[0], $line[1], $line[2]))
+          {
+            if ($line[0] . $line[1] . $line[2] === '<@>')
+            return '';
+            else return $line;
+          } else return $line;
+        }
+
+
+
+
+        /*
+        | @param String
+        | Manages if there's a function / class to be called in the scope.
+        | Function trigger looks like so:
+        | {{ function_name() }} or {{function_name()}}
+        */
+        public function function_call_manager($line)
+        {
+          if (isset($line[0], $line[1]))
+          if ($line[0] . $line[1] . $line[2] === '{{ ')
+          {
+            // This is well after the var-replacer, so this has to be a function!
+            // Getting the functions name.
+            $line = str_replace(['{{', '}}'], ['', ''], $line);
+            $line = rtrim(ltrim($line));
+            if ($line[strlen($line)-2] . $line[strlen($line)-1] === '()')
+            {
+              $function_name = preg_replace( "/(.*?)\(\)/is", '$1', $line );
+              if (function_exists($function_name))
+              {
+                $function_name();
+                return '';
+              }
+              else App::Error("jTE -> Call '<b>{$function_name}()</b>'", 'Function not exist, make sure it does.');
+            }
+          } else return $line;
+        }
+
+
+        /*
+        | @param Line
+        | Manages if the current line being interpreted is a class or not,
+        | trigger looks like so:
+        | {{{ ClassName, FunctionName, FnameParam1, FnameParam2, FnameParam3, FnameParam4, FnameParam5 }}}
+        */
+        public function class_manager($line)
+        {
+
+          if (isset($line[0], $line[1], $line[2]))
+          if ($line[0] . $line[1] . $line[2] === '{{{')
+          {
+            // Removes {{{}}} from string.
+            $line   = preg_replace( '/\{\{\{(.*?)\}\}\}/is', '$1', $line );
+            $pieces = explode(',', $line);
+            // Removing whitespace from each piece of aray.
+            foreach ($pieces as $index => $piece)
+            $pieces[$index] = rtrim(ltrim($piece));
+            // Gets the class the user wants to use then pulls from the array.
+            $class  = rtrim(ltrim( $pieces[0], '(' ), ')');
+            $class  = $this->classes[$class];
+            // Gets method.
+            $method = $pieces[1];
+            // Now managing the input & call of class method.
+            for ($i = 2; $i <= 7; $i++)
+            if (!isset($pieces[$i])) $pieces[$i] = false;
+            // Call.
+            $class->$method( $pieces[2], $pieces[3], $pieces[4], $pieces[5], $pieces[6], $pieces[7] );
+            return '';
+          }
+          else return $line;
+        }
 
 
 

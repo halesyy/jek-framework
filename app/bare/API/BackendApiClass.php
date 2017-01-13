@@ -102,16 +102,18 @@
       */
       public function auth_token($token)
         {
-          echo "AUTH TOKEN MANAGER TOKEN FROM FORM:\n";
-          echo "{$token}\n\n\n";
+          if (!isset($_SESSION['csrf_token'])) $this->APIError('Token authentication failed', 'No token set');
+          if ($_SESSION['csrf_token'] == 'ALR_CALLED') $this->APIError('Token can\'t be used twice', 'Token ALR_CALLED flagged');
 
-          echo "AUTH TOKEN MANAGER TOKEN FROM SESSION:\n";
-          echo "{$_SESSION['csrf_token']}\n\n\n{$_SESSION['num']}\n\n\n";
+          $token_from_form = $token;
+          $token_from_sess = $_SESSION['csrf_token'];
 
-          echo "DATA FROM SESSION VAR:\n";
-          echo "<pre>" , print_r($_SESSION) , "</pre>";
-
-          exit;
+          if ($token_from_form !== $token_from_sess) $this->APIError('Token recieved, tokens not equal', 'Token mismatch');
+          else
+            {
+              $_SESSION['csrf_token'] = 'ALR_CALLED';
+              return true;
+            }
         }
 
 

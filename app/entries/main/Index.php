@@ -1,5 +1,3 @@
-<div id="content">
-  <div id="content-place">
-    Content
-  </div>
-</div>
+@setter
+  signedin = SESSION.signedin
+@setter

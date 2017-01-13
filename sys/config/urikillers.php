@@ -10,4 +10,4 @@
   ];
 
   foreach ($blacklist as $index => $bl) $blacklist[$index] = '/'.$bl;
-  if ( in_array( $_SERVER['REQUEST_URI'], $blacklist ) ) exit("Illegal URL");
+  if ( in_array( $_SERVER['REQUEST_URI'], $blacklist ) ) die("Illegal URL");

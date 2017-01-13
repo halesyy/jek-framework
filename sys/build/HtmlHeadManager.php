@@ -34,21 +34,22 @@
     // Passed into array = slugs where <html>/<head> is generated.
     $head = new Head_Management(['index']);
 
-            $head->When('index', [
-              'css' => [
-                'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
-                '/public/css/jek-core/forms.css',
-                '/public/css/main.css'
-              ],
-              'js'  => [
-                'https://code.jquery.com/jquery-3.1.1.min.js',
-                'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
-                '/public/js/main.js'
-              ],
-              'google_font' => [
-                'Lato'
-              ]
-            ]);
+    // Managing the first browser load to aid out SPA.
+      $head->When('index', [
+        'css' => [
+          'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+          '/public/css/jek-core/forms.css',
+          '/public/css/main.css'
+        ],
+        'js'  => [
+          'https://code.jquery.com/jquery-3.1.1.min.js',
+          'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',
+          '/public/js/main.js'
+        ],
+        'google_font' => [
+          'Lato'
+        ]
+      ]);
 
     //End.
     $head->End();

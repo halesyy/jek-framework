@@ -43,9 +43,15 @@
   | /one/two/three, so just set the one/two/three as the blacklist
   | and that'll blacklist anyone from accessing "localhost/one/two/three"
   */
+
     require_once "sys/config/urikillers.php";
 
-
+  /*
+  | This is if you're using XDEBUG, I use this a lot in development
+  | so I have this line used a lot.
+  */
+    // if (false)
+    // $_GET['XDEBUG_PROFILE'] = true;
 
 
   /*
@@ -61,12 +67,14 @@
   | AClass.php since it's going to be loaded first (Alphabetical)).
   |
   | Example: You'll see lots of "App::Log"'s, since that handles users
-  | being able to understand the load path, etc..., use App::Logs() to
+  | being able to un derstand the load path, etc..., use App::Logs() to
   | load logs after the App is ran.
   |
   | Add new log: The prefered technique for logging is to have the actual
   | log occur 3/4 tabs from the normal tab scope.
   */
+    $_GET['XDEBUG_PROFILE'] = true;
+
     foreach ( glob( 'sys/load_first/*.php' ) as $inc )
     include_once($inc);
           App::Log('Finished loading all scripts labeled as \'load first\'', 'green');

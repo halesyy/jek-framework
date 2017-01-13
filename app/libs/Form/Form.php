@@ -403,7 +403,7 @@ $(document).ready(function(){
         $charset     = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:=;,.[]{}_+-';
         $charset_len = strlen($charset) - 1;
         $csrf_token  = '';
-          for ($i = 0; $i < 32; $i++)
+          for ($i = 0; $i < 128; $i++)
           $csrf_token .= $charset[rand(0, $charset_len)];
         return $csrf_token;
       }
@@ -411,9 +411,6 @@ $(document).ready(function(){
 
     function csrf_make($return = false)
       {
-        if (!isset($_SESSION['CALLS_FROM'])) $_SESSION['CALLS_FROM'] = [];
-        array_push( $_SESSION['CALLS_FROM'], $_SERVER['REQUEST_URI'] );
-
         $token = generate_token();
         $_SESSION['csrf_token'] = $token;
         $ipt   = "<input type='hidden' name='token' value='{$token}' />";

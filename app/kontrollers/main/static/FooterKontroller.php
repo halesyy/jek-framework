@@ -2,7 +2,7 @@
   class FooterKontroller extends Kontroller {
 
     public function index() {
-      echo '<p>Woo! we called the footer!</p>';
+      $this->loader->entry->JTE('main/static/Footer');
     }
 
   }
