@@ -47,6 +47,12 @@
         public $in_setter_mode = false;
 
         /*
+        | @var Bool
+        | Deters if the class is in builder mode or not.
+        */
+        public $in_builder_mode = false;
+
+        /*
         | @var Array
         | These are the "@import X" keywords, they're meant to
         | point to a specific filename IN the entry folder,
@@ -71,6 +77,11 @@
         */
         public $parse_inline_php = true;
 
+        /*
+        | Stores the Builder class.
+        */
+        public $builder = false;
+
       // ***************************************************************
 
       /*
@@ -87,6 +98,7 @@
             'session' => &$_SESSION,
             's'       => &$_SESSION
           ];
+          $this->builder = new jTEBuilder;
         }
 
 
@@ -181,6 +193,10 @@
               // Managing if using setter mode to set vars for easier manip later on.
                 if ($this->in_setter_mode && $line !== '')
                 $line = $this->setter_mode_manager($line);
+
+              // Managing Builder mode.
+                if ($this->in_builder_mode)
+                { $this->builder->store($line); $line = ''; }
 
               // Managing if using the if mode to output if statements or kill current line.
                 if ($this->in_if_mode && !$this->execute_if_code)
@@ -302,7 +318,7 @@
             $pieces = explode(' ',$line);
             // Splits and gets the keyword and toload.
             $keyword = (isset($pieces[0])) ? $keyword = $pieces[0] : $keyword = '';
-            $loading = (isset($pieces[1])) ? $loading = $pieces[1] : $loading = '';
+            $loading = (isset($pieces[1])) ? $loading = $pieces[1] : $loading = false;
 
             switch ($keyword):
               // Managing importing triggers.
@@ -314,6 +330,19 @@
                     return '';
                   }
                 else App::Error('JTE External Importer', "Keyword unknown <b>\"$loading\"</b>, please check the jTE class variable (public \$keywords)");
+              break;
+
+              // Managing the Builder references.
+              case 'builder':
+                $this->in_builder_mode = !$this->in_builder_mode;
+                return '';
+              break;
+
+              // Rendering the builder
+              case 'build':
+                $this->in_builder_mode = !$this->in_builder_mode;
+                $this->builder->render();
+                return '';
               break;
 
               // Managing the setter trigger.
@@ -362,12 +391,12 @@
         {
           if (isset($line[0], $line[1], $line[2]))
           {
-            if ($line[0] . $line[1] . $line[2] === '<@>')
+            if ($line[0].$line[1].$line[2] === '<@>' || $line[0].$line[1] === '@@')
             return '';
             else return $line;
           } else return $line;
         }
-
+        
 
 
 

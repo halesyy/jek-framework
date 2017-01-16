@@ -21,7 +21,14 @@
 
         <@> Form management
         {{{ Form, Errorplace, form }}}
-        {{{ Form, ForceGenerateJS, auth_test, form, form-errorplace, home }}}
+
+        @builder
+          name:   form.generatejs
+          type:   auth_test
+          formid: form
+          eplace: form-errorplace
+          goto:   nothing
+        @build
       @endif
     </div>
   </form>

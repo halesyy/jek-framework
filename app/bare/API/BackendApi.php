@@ -29,7 +29,7 @@
     },
     'auth_test' => function ($api) {
       $data = $api->s(['username', 'password']);
-      echo 'This was the API test';
+      $api->success('Woo!');
     }
   ]);
   $api->GET([

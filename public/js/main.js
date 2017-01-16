@@ -27,24 +27,34 @@ $(document).ready(function(){
       firstload: function() {
         this.loadpage();
       },
-      fuckforms: function(form_to_bind, type, errorplace, onsuccess) {
+      form_manager: function(form_to_bind, type, errorplace, goto) {
         $('#' + form_to_bind).bind('submit', function(event){
           event.preventDefault();
           $.post('api', {
             'type'  : type,
             'pdata' : $(this).serializeArray()
-          }, function( ret ){
-            alert(ret);
-            // tdata = JSON.parse( ret );
-            // if (tdata.return === "success")
-            //   {
-            //     $('#' + errorplace).html( tdata.html );
-            //     onsuccess();
-            //   }
-            // else
-            //   {
-            //     $('#' + errorplace).html( tdata.html );
-            //   }
+          }, function( body ){
+            alert(body);
+            $errorplace = $('#'+errorplace);
+            tdata = JSON.parse(body);
+            // Managing for return = success.
+            if (tdata.return === "success")
+              if (goto === "reload")
+                {
+                  $errorplace.html(tdata.html);
+                  window.location.reload();
+                }
+              else if (goto === "nothing")
+                {
+                  $errorplace.html(tdata.html);
+                }
+              else
+                {
+                  $errorplace.html(tdata.html);
+                  window.location.href = "#!/" + goto
+                }
+            else // Managing for not a successful API call.
+              $errorplace.html(tdata.html);
           });
         });
       }
