@@ -58,20 +58,20 @@
       | In this file, {{name}} is going to be replaced with $data['name'];
       | More functionality coming soon.
       */
-      public function JTE($filename, $data = [], $type = 'php')
+      public function JTE($filename, $data = [], $type = 'php', $use_setter_and_templater = false)
         {
                 App::Log("Going to load the Entry {$filename} with data, INTERNAL_PROTOCOL:JEKTEMPLATEENGINE", 'purple');
           $location = "app/entries/{$filename}.{$type}";
           if (file_exists( $location ))
             {
               $jte = new jTE;
-              $jte->file($location, $data);
+              $jte->file($location, $data, $use_setter_and_templater);
             }
           else App::Error('Kontroller -> Entry -> JekTemplateEngine', "Tried to load file <b>{$location}</b> - NOT FOUND.");
       }
-    public function render($filename, $data = [], $type = 'php')
+    public function Render($filename, $data = [], $type = 'php', $use_setter_and_templater = true)
       {
-        $this->JTE($filename, $data, $type);
+        $this->jte($filename, $data, $type, $use_setter_and_templater);
       }
 
 

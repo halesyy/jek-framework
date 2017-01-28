@@ -122,7 +122,7 @@
       | content and use the jTE rendering engine to render all other
       | content such as variables, etc...
       */
-      public function file($filename, $data = [])
+      public function file($filename, $data = [], $get_setter_and_templater = true)
         {
           $this->data = $data;
 
@@ -138,8 +138,14 @@
                     $content = ob_get_clean();
                   } else $content = file_get_contents($filename);
               // Adding the content from the Setter first.
-                $setter = (file_exists( "app/entries/Setter.php" )) ? file_get_contents("app/entries/Setter.php") : '';
-                $content = $setter.$content;
+                if ($filename != '')
+              // Manages using the setter and templater.
+                if ($get_setter_and_templater)
+                  {
+                    $setter    = (file_exists( "app/entries/Setter.php" )) ? file_get_contents("app/entries/Setter.php") : '';
+                    $templater = (file_exists( "app/entries/Templater.php" )) ? file_get_contents("app/entries/Templater.php") : '';
+                    $content = $templater.$setter.$content;
+                  }
               // Runs the Interpreter.
                 $this->interpreter($content);
             }
@@ -195,6 +201,14 @@
               // Managing if using setter mode to set vars for easier manip later on.
                 if ($this->in_setter_mode && $line !== '')
                 $line = $this->setter_mode_manager($line);
+
+              // Managing if using the templater mode to set all of the templates
+                if ($this->in_templater_mode && $line !== '')
+                { array_push($this->current_template_data, $line); $line = ''; }
+
+              // Managing if using the templater mode for generating a template.
+                if ($this->generating_template && $line !== '')
+                { array_push($this->temp_gen_store, $line); $line = ''; }
 
               // Managing Builder mode.
                 if ($this->in_builder_mode)

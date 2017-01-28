@@ -65,6 +65,8 @@
       public $last_auto_modal_id = '#modal';
       public function trigger_auto_modal($loading)
         {
+          if ($this->in_if_mode && !$this->execute_if_code) return '';
+
           if (!$loading) App::Error('jTE Modal Creator', 'No name for modal supplied');
           if (count(explode(':',$loading)) != 2) App::Error('jTE Modal Creator', 'No modal name given, format: <b>ID:Modal Title</b>');
           $loading = str_replace('_',' ',$loading);
@@ -83,6 +85,8 @@
         }
       public function trigger_end_auto_modal($loading)
         {
+          if ($this->in_if_mode && !$this->execute_if_code) return '';
+
           echo "</div>"; // End of modal body.
           //footer man.
           if ($loading !== false && $loading == 'none')
@@ -120,6 +124,8 @@
 
       public function trigger_modal($loading)
         {
+          if ($this->in_if_mode && !$this->execute_if_code) return '';
+
           if (!$loading) App::Error('jTE Modal Creator', 'No name for modal supplied');
           if (count(explode(':',$loading)) != 2) App::Error('jTE Modal Creator', 'No modal name given, format: <b>ID:Modal Title</b>');
           $loading = str_replace('_',' ',$loading);
@@ -140,6 +146,8 @@
 
       public function trigger_endmodal($loading)
         {
+          if ($this->in_if_mode && !$this->execute_if_code) return '';
+
           echo "</div>"; // End of modal body.
           //footer man.
           if ($loading !== false && $loading == 'none')
@@ -274,5 +282,64 @@
       public function trigger_endhalf()
         {
           echo "</div>";
+        }
+
+
+
+
+      /*
+      | The templating engines templating engine.
+      | All vars and methods are loacated here.
+      */
+
+      public $current_template_name = false;
+      public $in_templater_mode     = false;
+      public $current_template_data = [];
+
+      public $templates = [];
+
+      public $temp_gen_store      = [];
+      public $generating_template = false;
+      public $template_using      = false;
+
+      public $content_placer_trigger = ':content';
+
+      public function trigger_set($template_name)
+        {
+          $this->current_template_name = $template_name;
+          $this->in_templater_mode     = true;
+        }
+      public function trigger_endset()
+        {
+          $this->in_templater_mode     = false;
+          // Now getting current name and labeling and storing the template.
+          $this->templates[$this->current_template_name] = implode(' ',$this->current_template_data);
+        }
+      public function trigger_current_template_print()
+        {
+          echo "<pre>", print_r($this->current_template_data) ,"</pre>";
+        }
+      public function trigger_print_templates()
+        {
+          echo "<pre>", print_r($this->templates) ,"</pre>";
+        }
+
+
+
+      public function trigger_template($template_name)
+        {
+          if (!isset($this->templates[$template_name]))
+          App::Error('jTE Templating Engine', 'Internal Templater engine "<b>'.$template_name.' template name not exist</b>"');
+          $this->template_using = $template_name;
+          $this->generating_template = true;
+          $this->temp_gen_store = [];
+        }
+      public function trigger_endtemplate()
+        {
+          $this->generating_template = false;
+          $template      = $this->templates[$this->template_using];
+          $template_data = implode(' ',$this->temp_gen_store);
+          $search        = $this->content_placer_trigger;
+          echo str_replace( $search, $template_data, $template );
         }
     }

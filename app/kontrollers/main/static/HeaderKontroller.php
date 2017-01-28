@@ -6,6 +6,8 @@
     | creating HTML to display as well as dropdowns, etc...
     */
 
+
+
     public function index() {
       require_once App::ConfigGet('header_display');
       $links = $this->manage_triggerable_data( $c['hd']['triggerable'] );
@@ -16,6 +18,8 @@
         'triggerable'    => $links
       ]);
     }
+
+
 
     public function manage_triggerable_data($link_array) {
       $links = '';

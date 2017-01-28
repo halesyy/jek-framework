@@ -1,9 +1,5 @@
 @small-header
 
-@auto-modal a:Autoloaded_Modal!
-  <p>This was auto loaded!</p>
-@end-auto-modal
-
 <div class="container">
   @row
     @col 6,6,12,12
