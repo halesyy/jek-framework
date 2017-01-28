@@ -4,12 +4,10 @@
     {
       /*
       | The backend API to manage all requests.
-      |
-      | The main consept is a long array that contains slugs, and the GET slugs are equal to the third run.
-      |
+      | The main consept is a long array that contains slugs, and the GET
+      | slugs are equal to the third run.
       | URI: /api/get/slug3
       | if SLUG3 == 'test', run the array function with the key of 'test'.
-      |
       | There's going to be mainly the POST API and the GET API.
       */
 
@@ -18,12 +16,14 @@
         // IF POST_LOOKING = 'type', will look in $_POST['type'] for the POST slugs.
         public $POST_LOOKIN = 'type';
         public $psm         = false;
+        public $auth        = false;
 
       //******************************************************************************
 
       public function __construct( $psm )
         {
           $this->psm = $psm;
+          $this->auth = Globals::Get('Auth');
         }
 
 
@@ -73,19 +73,17 @@
 
           // Puts the pdata into the appropriate array.
           foreach ( $pdata as $index => $container )
-            $data[ $container['name'] ] = $container['value'];
-          // Data is retrieved.
-
-          // If force was successful, and data is all there - will
-          // make sure token is safe.
-          $this->auth_token( $data['token'] );
+          $data[ $container['name'] ] = $container['value'];
 
           // Doing the force.
           $only_fields = array_keys( $data );
           foreach ($force as $index => $toforce)
             if ( $only_fields[ $index ] != $toforce )
-              $this->APIError('Force was tried & fail', "Force failed: {$only_fields[$index]} NOT EQUAL {$toforce}");
+            $this->APIError('Force was tried & fail', "Force failed: {$only_fields[$index]} NOT EQUAL {$toforce}");
 
+          // If force was successful, and data is all there - will
+          // make sure token is safe.
+          $this->auth_token( $data['token'] );
 
           return $data;
         }

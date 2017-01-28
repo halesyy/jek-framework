@@ -65,6 +65,11 @@
         'call'    => 'main/IndexKontroller@home',
         'when'    => 'get',
         'dynamic' => true
+      ],
+      'login' => [
+        'call'    => 'main/IndexKontroller@login',
+        'when'    => 'get',
+        'dynamic' => true
       ]
     ]);
     //

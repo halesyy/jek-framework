@@ -1,5 +1,5 @@
 <?php
-  class jTE
+  class jTE extends jTETriggers
     {
       /*
       | The jekTemplateEngine class, meant to compile files
@@ -94,6 +94,8 @@
             'Form' => load_class('Form'),
             'JTE'  => $this
           ];
+          if (isset($_SESSION['signedin'])) $this->classes['User'] = new User($_SESSION['signedin']);
+
           $this->shorthand_setter_vars = [
             'session' => &$_SESSION,
             's'       => &$_SESSION
@@ -275,6 +277,7 @@
 
         public function setter_mode_manager($line)
           {
+            if (empty($line)) return $line;
             $pieces = explode(' = ', $line);
             if (count($pieces) != 2) App::Error('JTE Variable Setter', 'Not one <b>" = "</b> in var setting. (@ Line "<b>'.$line.'</b>")');
             $varname = $pieces[0];
@@ -320,62 +323,12 @@
             $keyword = (isset($pieces[0])) ? $keyword = $pieces[0] : $keyword = '';
             $loading = (isset($pieces[1])) ? $loading = $pieces[1] : $loading = false;
 
-            switch ($keyword):
-              // Managing importing triggers.
-              case 'import':
-                if (in_array($loading, array_keys($this->import_keywords)))
-                  {
-                    $loading = $this->import_keywords[ $loading ];
-                    require_once( "app/entries/" . $loading );
-                    return '';
-                  }
-                else App::Error('JTE External Importer', "Keyword unknown <b>\"$loading\"</b>, please check the jTE class variable (public \$keywords)");
-              break;
-
-              // Managing the Builder references.
-              case 'builder':
-                $this->in_builder_mode = !$this->in_builder_mode;
-                return '';
-              break;
-
-              // Rendering the builder
-              case 'build':
-                $this->in_builder_mode = !$this->in_builder_mode;
-                $this->builder->render();
-                return '';
-              break;
-
-              // Managing the setter trigger.
-              case 'setter':
-                $this->in_setter_mode = !$this->in_setter_mode;
-                return '';
-              break;
-
-              // Managing starting of an if trigger statement.
-              case 'if':
-                if ($loading === '')
-                App::Error('JTE If starter', 'No conditional given');
-                else if (!in_array( $loading, array_keys($this->official_setter_vars) ))
-                App::Error('JTE If starter', 'No official var given for the trigger <b>"'.$loading.'"</b>');
-                $this->execute_if_code = $this->official_setter_vars[$loading];
-                $this->in_if_mode = true;
-              break;
-
-              // Managing a swap of if outputter.
-              case 'else':
-                $this->execute_if_code = !$this->execute_if_code;
-              break;
-
-              // Managing the end of an if statement running.
-              case 'endif':
-                $this->in_if_mode = false;
-              break;
-
-              // Managing a shorthand typeable trigger to kill a session.
-              case 'killsession' OR 'ks':
-                session_unset();
-              break;
-            endswitch;
+            $keyword = str_replace('-','_',$keyword);
+            if (method_exists($this, 'trigger_'.$keyword))
+              {
+                $fname = 'trigger_'.$keyword;
+                $this->$fname($loading);
+              } else return $line;
           } else return $line;
         }
 
@@ -391,12 +344,12 @@
         {
           if (isset($line[0], $line[1], $line[2]))
           {
-            if ($line[0].$line[1].$line[2] === '<@>' || $line[0].$line[1] === '@@')
-            return '';
+            if ($line == '<container>' || $line == '</container>') return '';
+            else if ($line[0].$line[1].$line[2] === '<@>' || $line[0].$line[1] === '@@') return '';
             else return $line;
           } else return $line;
         }
-        
+
 
 
 
@@ -449,6 +402,7 @@
             $pieces[$index] = rtrim(ltrim($piece));
             // Gets the class the user wants to use then pulls from the array.
             $class  = rtrim(ltrim( $pieces[0], '(' ), ')');
+            $classname = $class;
             $class  = $this->classes[$class];
             // Gets method.
             $method = $pieces[1];
@@ -456,7 +410,14 @@
             for ($i = 2; $i <= 7; $i++)
             if (!isset($pieces[$i])) $pieces[$i] = false;
             // Call.
-            $class->$method( $pieces[2], $pieces[3], $pieces[4], $pieces[5], $pieces[6], $pieces[7] );
+            if ($classname == 'User')
+              {
+                return $class->$method( $pieces[2], $pieces[3], $pieces[4], $pieces[5], $pieces[6], $pieces[7] );
+              }
+            else
+              {
+                $class->$method( $pieces[2], $pieces[3], $pieces[4], $pieces[5], $pieces[6], $pieces[7] );
+              }
             return '';
           }
           else return $line;

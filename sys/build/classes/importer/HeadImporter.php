@@ -45,7 +45,7 @@
         {
           $this->load_html_start = $load_html_start;
           if ( in_array( Url::First(), $load_html_start ) )
-            echo "<html>\n<head>\n";
+            echo "<!DOCTYPE html>\n<html>\n<head>\n";
         }
 
 
@@ -97,7 +97,7 @@
             $plugin_contents = $this->plugins[$plugin_name];
             //Loading the content from the Plugin content. (Given from the Plugins function)
             foreach ($plugin_contents as $scheme => $import_content )
-              $this->Import($scheme, $import_content);
+            $this->Import($scheme, $import_content);
           }
       }
 

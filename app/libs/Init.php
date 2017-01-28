@@ -29,9 +29,13 @@
   include_once "{$to}/JekJS/JekJS.php";
 
   //jTE Templating Class.
+  include_once "{$to}/jTE/jTETriggers.php";
   include_once "{$to}/jTE/jTE.php";
   include_once "{$to}/jTE/jTERaindrops.php";
   include_once "{$to}/jTE/jTEBuilder.php";
 
   //Form class.
   include_once "{$to}/Form/Form.php";
+
+  //UserClass for userdata.
+  include_once "{$to}/UserClass/User.php";

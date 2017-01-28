@@ -27,14 +27,20 @@
             // Incharge of supplying all of the FIRSTLOAD data.
             $this->loader->set->title = 'JEKF';
             // Loading the header and default page content.
-            // $this->loader->builder->header;
+            $this->loader->builder->header;
               $this->loader->entry->render('main/Index', [
-                'name' => 'jack'
               ]);
-            // $this->loader->builder->footer;
+            $this->loader->builder->footer;
           }
         public function home()
           {
-            $this->loader->entry->JTE('main/Home');
+            $this->loader->entry->render('main/Home');
           }
+        public function login()
+          {
+            $this->loader->entry->render('main/Login', [
+
+            ]);
+          }
+
     }

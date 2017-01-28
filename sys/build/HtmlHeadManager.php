@@ -38,8 +38,11 @@
       $head->When('index', [
         'css' => [
           'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
+          '/public/css/jek-core/content.css',
           '/public/css/jek-core/forms.css',
-          '/public/css/main.css'
+          '/public/css/main.css',
+          '/public/css/jek-core/effects.css',
+          '/public/css/jek-core/header.css'
         ],
         'js'  => [
           'https://code.jquery.com/jquery-3.1.1.min.js',
@@ -47,7 +50,7 @@
           '/public/js/main.js'
         ],
         'google_font' => [
-          'Lato'
+          'Lato|Montserrat|Oswald|Ubuntu|Ubuntu+Condensed'
         ]
       ]);
 
