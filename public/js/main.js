@@ -1,20 +1,17 @@
 $(document).ready(function(){
   window.jek =
     {
+      //jquery-elements for content, header and footer.
       content: $('#content'),
-
       header: $('#header'),
       footer: $('#footer'),
-      contentid: false,
-
       //footer
       basefooterheight:  30,
-
       // the height of the header is collapsed
       largeheaderheight:   200,
       // gset set
       normalheaderheight: false,
-      // when the header is small
+      // when the header is small - @small-header in the php_triggers area
       smallheaderheight: 60,
 
       docheight: function()
