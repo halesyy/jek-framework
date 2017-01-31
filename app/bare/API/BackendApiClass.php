@@ -23,7 +23,7 @@
       public function __construct( $psm )
         {
           $this->psm = $psm;
-          $this->auth = Globals::Get('Auth');
+          $this->auth = Globals::Get('auth');
         }
 
 
@@ -69,7 +69,13 @@
           $force = array_merge(['token'], $force);
           // Makes sure thse PDATA is set.
           if (isset($_POST['pdata'])) $pdata = $_POST['pdata'];
-          else $this->APIError('Sanitize [s()] function called', 'No PDATA given.');
+          else
+            {
+              print_r($_REQUEST);
+              echo "\n\n";
+              $this->APIError('Sanitize [s()] function called', 'No PDATA given in POST vars.');
+
+            }
 
           // Puts the pdata into the appropriate array.
           foreach ( $pdata as $index => $container )

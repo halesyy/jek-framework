@@ -11,7 +11,7 @@
 
 
 /*COLOR Setting - for main background.*/
-.jf-title, .jf-submit > input[type="submit"], .divcontainer > .title
+.jf-container > form > .title, .jf-submit > input[type="submit"], .divcontainer > .title
   {
     /**/
     background-color: #428bca;
@@ -23,7 +23,7 @@
     background-color: #fafafa;
   }
 /*FONT Setting - for the main fonts of the forms.*/
-.jf-title, .jekform input[type="text"], .jekform input[type="password"]
+.jf-container > form > .title, .jekform input[type="text"], .jekform input[type="password"]
   {
     font-family: 'Lato', Arial;
   }
@@ -70,7 +70,7 @@
   }
 
 
-.jf-title
+.jf-container > form > .title
   {
     font-size: 20px;
     margin-bottom: 20px;
@@ -80,13 +80,9 @@
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
   }
-.jf-content
+.jf-container > form > .content
   {
     padding: 10px;
-  }
-.title
-  {
-
   }
 
 

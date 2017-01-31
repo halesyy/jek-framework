@@ -70,6 +70,13 @@
         'call'    => 'main/IndexKontroller@login',
         'when'    => 'get',
         'dynamic' => true
+      ],
+      'changer' => [
+        'entry'   => 'main/Changer',
+        'jte'     => true,
+        'data'    => [
+          'name' => 'jack'
+        ]
       ]
     ]);
     //

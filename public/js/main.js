@@ -7,10 +7,15 @@ $(document).ready(function(){
       footer: $('#footer'),
       contentid: false,
 
+      //footer
       basefooterheight:  30,
+
       // the height of the header is collapsed
       largeheaderheight:   200,
+      // gset set
       normalheaderheight: false,
+      // when the header is small
+      smallheaderheight: 60,
 
       docheight: function()
         {
@@ -52,6 +57,7 @@ $(document).ready(function(){
       load_page: function(speed = false)
         {
           //going put the header and footer back just incase was changed
+          this.resize_header();
           this.fold_header_down();
           this.fold_footer_down();
 
@@ -65,7 +71,7 @@ $(document).ready(function(){
                 window.jek.content.fadeOut(250, function(){
                   window.jek.content.html(body);
                   window.jek.content.fadeIn(250, function(){
-                    if ($(window).height() == $(document).height()) window.jek.footer_enlarge();
+                    if ($(window).height() === $(document).height()) window.jek.footer_enlarge();
                     else window.jek.footer_delarge();
                   });
                 });
@@ -73,12 +79,13 @@ $(document).ready(function(){
             else
               {
                 window.jek.content.html(body);
-                if ($(window).height() == $(document).height()) window.jek.footer_enlarge();
+                if ($(window).height() === $(document).height())
+                { window.jek.footer_enlarge(); }
               }
           });
         },
       form_manager: function(form_to_bind, type, errorplace, goto) {
-        $('#' + form_to_bind).bind('submit', function(event){
+        $('#'+form_to_bind).bind('submit', function(event){
           event.preventDefault();
           $.post('api', {
             'type'  : type,
@@ -95,37 +102,42 @@ $(document).ready(function(){
                   window.location.reload();
                 }
               else if (goto === "nothing" || goto == "none")
-                {
-                  $errorplace.html(tdata.html);
-                }
+                { $errorplace.html(tdata.html); }
               else
                 {
                   $errorplace.html(tdata.html);
                   window.location.href = "#!/" + goto
                 }
-            else // Managing for not a successful API call.
-              $errorplace.html(tdata.html);
+            else { $errorplace.html(tdata.html); }
           });
         });
       },
-
-
+    form_binder: function(formid, type, callback, alert_return_instantly = false)
+      {
+        $('#'+formid).bind('submit', function(event){
+          event.preventDefault();
+          $.post('api', {
+            'type'  : type,
+            'pdata' : $(this).serializeArray()
+          }, function( body ){
+            if (alert_return_instantly) alert(body);
+            tdata = JSON.parse(body);
+            if (tdata.return === "success") success = true; else success = false;
+            callback({
+              raw     : body,
+              success : success
+            });
+          });
+        });
+      },
     fold_header_up: function()
-      {
-        this.header.slideUp();
-      },
+      { this.header.slideUp(); },
     fold_header_down: function()
-      {
-        this.header.slideDown();
-      },
+      { this.header.slideDown(); },
     fold_footer_up: function()
-      {
-        this.footer.slideUp();
-      },
+      { this.footer.slideUp(); },
     fold_footer_down: function()
-      {
-        this.footer.slideDown();
-      },
+      { this.footer.slideDown(); },
 
     footer_enlarge: function()
       {
@@ -141,10 +153,40 @@ $(document).ready(function(){
           $('#footer > #footer-preview').fadeIn();
         });
       },
-
     small_header: function()
       {
         this.header.height( this.smallheaderheight );
+      },
+    resize_header: function()
+      {
+        this.header.height (this.normalheaderheight );
+      },
+    // Rotater methods and data.
+    first:  false,
+    second: false,
+    type:   'slide',
+    rotater_config: function(object)
+      {
+        this.first = object.first;
+        this.second = object.second;
+        if (object.type) this.type = object.type;
+      },
+    rotate: function()
+      {
+        if (this.first.is(':visible'))
+          {
+            if (this.type === 'slide')
+              { this.first.slideUp(); this.second.slideDown(); }
+            else
+              { this.first.fadeOut(); this.second.fadeIn(); }
+          }
+        else
+          {
+            if (this.type === 'slide')
+              { this.second.slideUp(); this.first.slideDown(); }
+            else
+              { this.second.fadeOut(); this.first.fadeIn(); }
+          }
       }
   };
   window.jek.load_current_page();
