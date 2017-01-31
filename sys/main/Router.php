@@ -30,6 +30,10 @@
           'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
           'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
           'y', 'z',
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+          'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+          'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+          'Y', 'Z',
 
           '0', '1', '2', '3', '4', '5', '6', '7', '8' ,'9'
         ];
@@ -93,7 +97,7 @@
         public function ForceRangler($force_types)
           {
             $types = [
-              'LETTERS'  => range('a','z'),
+              'LETTERS'  => array_merge(range('a','z'), range('A','Z')),
               'NUMBERS'  => range('0','9'),
               'SPECIALS' => ['-','=']
             ];
@@ -125,42 +129,54 @@
         public function RouteMultipleInstances($slug_definitions)
           {
             // Checking for 404.
-            if (!isset( $slug_definitions[ Url::First() ] ))
-              App::Error_404();
+            if (!isset( $slug_definitions[ strtolower(Url::First()) ] )) App::Error_404();
             else $definitions = $slug_definitions[ Url::First() ];
 
-            // Manager to set defaults as well as sets.
-            if (isset($definitions['call'])) $to_call    = $definitions['call'];
-            else $to_call = 'IndexKontroller@index';
-            if (isset($definitions['when'])) $call_type  = strtolower($definitions['when']);
-            else $call_type = 'get';
-            if (isset($definitions['dynamic'])) $dynamic = $definitions['dynamic'];
-            else $dynamic = false;
-
-            // Managing the callable function if wanted.
-            if (isset($definitions['callback']))
+            // Wants to simply render a file.
+            if (isset($definitions['entry']))
               {
-                call_user_func( $definitions['callback'], $this->Kontroller );
-                exit;
-              }
-
-            // GET MANAGER.
-            if ( strtolower($call_type) == 'get' )
-              {
-                // We're gonna have to load the Kontroller!
-                $split_components = explode( '@', $to_call );
-                if (count( $split_components ) == 1)
-                { $kontroller_name = $to_call; $kontroller_method = 'index'; }
+                if (isset($definitions['jte']) && $definitions['jte'] === true)
+                  {
+                    $data = (isset($definitions['data'])) ? $definitions['data'] : [];
+                    $entry = new Entry;
+                    $entry->render($definitions['entry'], $data);
+                  }
                 else
-                { $kontroller_name = $split_components[0]; $kontroller_method = $split_components[1]; }
-
-                // $this->kontroller - Contains the Kontroller class.
-                $this->Kontroller->RouterKontrollerLoader(
-                  $kontroller_name,
-                  $kontroller_method,
-                  $dynamic
-                );
+                  {
+                    $entry = new Entry;
+                    $entry->load($definitions['entry']);
+                  }
               }
+            else
+              {
+                // Manager to set defaults as well as sets.
+                $to_call = (isset($definitions['call'])) ? $definitions['call'] : 'IndexKontroller@index';
+                $call_type = (isset($definitions['when'])) ? $definitions['when'] : 'get';
+                $dynamic = (isset($definitions['dynamic'])) ? $definitions['dynamic'] : false;
+                if (isset($definitions['callback']))
+                {
+                  call_user_func( $definitions['callback'], $this->Kontroller );
+                  exit;
+                }
+                // GET MANAGER.
+                if ( strtolower($call_type) == 'get' )
+                {
+                  // We're gonna have to load the Kontroller!
+                  $split_components = explode( '@', $to_call );
+                  if (count( $split_components ) == 1)
+                  { $kontroller_name = $to_call; $kontroller_method = 'index'; }
+                  else
+                  { $kontroller_name = $split_components[0]; $kontroller_method = $split_components[1]; }
+
+                  // $this->kontroller - Contains the Kontroller class.
+                  $this->Kontroller->RouterKontrollerLoader(
+                    $kontroller_name,
+                    $kontroller_method,
+                    $dynamic
+                  );
+                }
+              }
+
           }
 
 

@@ -10,14 +10,16 @@
       // Sets a variable to be used globally.
       public static function Set($name, $value)
         {
+          $name = strtolower($name);
           self::$vars[ $name ] = $value;
         }
 
       // Gets a variable that's been set.
       public static function Get($name)
         {
+          $name = strtolower($name);
           if (self::exists($name)) return self::$vars[ $name ];
-            else App::Error('Globals class called', "<b>{$name}</b> variable not set - make sure it was!");
+          else App::Error('Globals class called', "<b>{$name}</b> variable not set - make sure it was!");
         }
 
 

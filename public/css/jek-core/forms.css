@@ -2,24 +2,31 @@
 | CSS For form-related pieces of sexiness.
 */
 
+/*Styling you use for background-images as background images.*/
+.background-image
+  {
+    background-position: center;
+    background-size:     cover !important;
+  }
+
+
 /*COLOR Setting - for main background.*/
-.jf-title, .jf-submit > input[type="submit"]
+.jf-container > form > .title, .jf-submit > input[type="submit"], .divcontainer > .title
   {
     /**/
-    background-color: #4CC987;
+    background-color: #428bca;
     color: white;
   }
 .jf-container
   {
     /**/
-    background-color: #7D7E7D;
+    background-color: #fafafa;
   }
 /*FONT Setting - for the main fonts of the forms.*/
-.jf-title, .jekform input[type="text"], .jekform input[type="password"]
+.jf-container > form > .title, .jekform input[type="text"], .jekform input[type="password"]
   {
     font-family: 'Lato', Arial;
   }
-
 .jekform
   {
 
@@ -34,9 +41,36 @@
     border-radius: 4px;
   }
 
+/*The glow of the inputs when clicked on.*/
+  textarea:focus,
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="datetime"]:focus,
+  input[type="datetime-local"]:focus,
+  input[type="date"]:focus,
+  input[type="month"]:focus,
+  input[type="time"]:focus,
+  input[type="week"]:focus,
+  input[type="number"]:focus,
+  input[type="email"]:focus,
+  input[type="url"]:focus,
+  input[type="search"]:focus,
+  input[type="tel"]:focus,
+  input[type="color"]:focus,
+  .uneditable-input:focus {
+    border-color: rgba(91,192,222, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(91,192,222, 0.6);
+    outline: 0 none;
+  }
+
+.jf-container-none, .jf-container-nothing, .none
+  {
+    padding: 0 !important;
+    margin:  0 !important;
+  }
 
 
-.jf-title
+.jf-container > form > .title
   {
     font-size: 20px;
     margin-bottom: 20px;
@@ -45,9 +79,8 @@
     padding: 20px;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
-
   }
-.jf-content
+.jf-container > form > .content
   {
     padding: 10px;
   }
@@ -55,17 +88,17 @@
 
 
 /*All margin managers.*/
-.mid-small
+.middle-small
   {
     width: 30%;
     margin-left: 35%;
   }
-.mid-medium
+.middle-medium
   {
     width: 50%;
     margin-left: 25%;
   }
-.mid-large
+.middle-large
   {
     width: 80%;
     margin-left: 10%;
@@ -78,14 +111,24 @@
     margin-bottom: 10px;
   }
 
-.jekform input[type="text"], .jekform input[type="password"]
+.jekform input[type="text"], .jekform input[type="password"],
+.jekform input[type="number"], .jekform select, .ipt
   {
-
-    padding: 10px;
+    padding: 6px 12px 6px 12px;
     font-size: 12px;
-    border-radius: 4px;
+    border-radius: 2px;
     border: solid silver 1px;
     width: 100%;
+  }
+.solo
+  {
+    padding: 6px 12px 6px 12px;
+    margin: 0 20px 10px 20px;
+    width: calc(100% - 40px) !important;
+  }
+.solo-small
+  {
+    margin: 10px;
   }
 .jf-margin-ipts input
   {
@@ -97,11 +140,40 @@
   }
 .jf-submit > input[type="submit"]
   {
-    margin-top: 20px;
     border: 0;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 16px;
-    padding: 5px;
+    border-radius: 2px;
+    font-size: 12px;
+    padding: 4px 16px 4px 16px;
     text-transform: uppercase;
   }
+
+
+
+/*
+| For nicely centered divs.
+*/
+.divcontainer
+  {
+
+  }
+.divcontainer > .title
+  {
+    padding: 20px;
+    font-size: 20px;
+    text-transform: uppercase;
+
+    border-top-right-radius: 4px;
+    border-top-left-radius:  4px;
+  }
+.divcontainer > .content
+  {
+
+  }
+
+
+
+
+
+
+
+/**/

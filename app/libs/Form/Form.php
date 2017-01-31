@@ -348,43 +348,6 @@
           $this->element('/script', [], false);
           return $this;
         }
-
-
-
-
-
-
-      // Generate the window.jek.fuckforms wanted layout.
-      public function generatejs($type, callable $success = null)
-        {
-          $this->start_script();
-?>
-$(document).ready(function(){
-  window.jek.fuckforms('<?=$this->current_form_id?>', '<?=$type?>', '<?=$this->current_errorplace_id?>', function(){
-    <?php if (isset($success)) $success(); ?>
-  });
-});
-<?php
-          $this->end_script();
-        }
-
-      // Generate the JS in a force way without using class vars.
-      public function forcegeneratejs($type, $formid, $errorplaceid, $goto = false)
-        {
-          $this->start_script();;
-?>
-$(document).ready(function(){
-  window.jek.fuckforms('<?=$formid?>', '<?=$type?>', '<?=$errorplaceid?>', function(){
-    <?php if ($goto !== false): ?>
-      window.location.href = "#!/<?=$goto?>";
-    <?php else: ?>
-      window.location.reload();
-    <?php endif; ?>
-  });
-});
-<?php
-          $this->end_script();
-        }
     }
 
 

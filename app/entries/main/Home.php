@@ -1,3 +1,1 @@
-<div id="content">
-  Content goes here
-</div>
+<a href="/#!/login">Click me zoe!</a>

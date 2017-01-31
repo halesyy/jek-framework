@@ -106,7 +106,13 @@
         }
 
 
-
+    // Loads a config file from the config area, returning the true path.
+      public static function ConfigGet($configname)
+        {
+          $pathtoconfig = 'sys/config/';
+          $truepath     = $pathtoconfig . $configname . '.php';
+          return $truepath;
+        }
 
 
 
