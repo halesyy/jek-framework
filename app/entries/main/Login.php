@@ -2,9 +2,9 @@
 
 <script>
 $(document).ready(function(){
-  window.jek.form_binder('form', 'index', function(sobj){
-    alert(sobj.raw);
-  }, true);
+  window.jek.form_binder('login', 'index', function(sobj){
+    sobj.errorplace.html('XD!');
+  });
 });
 </script>
 
@@ -24,7 +24,7 @@ $(document).ready(function(){
     @endcol
     @col 6,6,12,12
       <div class="jf-container jf-container-none" id="form" style="">
-        <form method="post" id="form" class="jekform">
+        <form method="post" id="login" class="jekform">
           <div class="title">
             Login
           </div>
@@ -40,6 +40,8 @@ $(document).ready(function(){
             {{{ Form, Submit, Login }}}
 
             {{{ Form, Errorplace, form }}}
+
+
             @@builder
             @@  name: form.generatejs
             @@  formid: form

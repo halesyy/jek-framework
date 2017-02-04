@@ -74,23 +74,18 @@
               print_r($_REQUEST);
               echo "\n\n";
               $this->APIError('Sanitize [s()] function called', 'No PDATA given in POST vars.');
-
             }
-
           // Puts the pdata into the appropriate array.
           foreach ( $pdata as $index => $container )
           $data[ $container['name'] ] = $container['value'];
-
           // Doing the force.
           $only_fields = array_keys( $data );
           foreach ($force as $index => $toforce)
             if ( $only_fields[ $index ] != $toforce )
             $this->APIError('Force was tried & fail', "Force failed: {$only_fields[$index]} NOT EQUAL {$toforce}");
-
           // If force was successful, and data is all there - will
           // make sure token is safe.
           $this->auth_token( $data['token'] );
-
           return $data;
         }
 
@@ -127,9 +122,15 @@
       | Takes in a title and message and outputs it using line breaks
       | for when debugging content using JS's alert().
       */
-      public function APIError($title, $message)
+      public function APIError($title, $message, $base = false)
         {
-          echo "$title\n\n$message";
+          if ($base) echo "$title\n\n$message";
+          else
+            {
+              $this->Return_Packer('error', [
+                'html' => App::Alert("<b>{$title}</b>: {$message}")
+              ]);
+            }
           exit;
         }
 
