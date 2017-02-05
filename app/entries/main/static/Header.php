@@ -1,6 +1,7 @@
-<div id="header" style="height: 200px; background-image: url({{ header_image }})" class="background-image">
+<div id="header" style="background-image: url({{ header_image }})" class="background-image">
     <nav class="navbar navbar-default">
-      <div class="container header-container">
+      <div class="container-fluid header-container">
+        <div class="container horizontal-container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse-partition" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
@@ -26,16 +27,12 @@
                 </ul>
               </li>
             @else
-              <li><a href="#!/login">Login</a></li>
-              <li><a href="#!/register">Register</a></li>
+              <li><a class="navbar-link farleft-link" href="#!/login">Login</a></li>
+              <li><a class="navbar-link" href="#!/register">Register</a></li>
             @endif
           </ul>
         </div>
+        </div>
       </div>
     </nav>
-
-
-    @if signedin
-
-    @endif
 </div>

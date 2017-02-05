@@ -101,6 +101,12 @@
       */
       public function auth_token($token)
         {
+          if (isset($_SESSION['csrf_none_token']))
+            {
+              // Quick management for a none-token (token meant to be useable
+              // many times as wanted)
+              if ($token === $_SESSION['csrf_none_token']) return true; else $this->APIError('None-Token used', 'Incorrect');
+            }
           if (!isset($_SESSION['csrf_token'])) $this->APIError('Token authentication failed', 'No token set');
           if ($_SESSION['csrf_token'] == 'ALR_CALLED') $this->APIError('Token can\'t be used twice', 'Token ALR_CALLED flagged');
 
@@ -113,6 +119,20 @@
               $_SESSION['csrf_token'] = 'ALR_CALLED';
               return true;
             }
+        }
+
+
+
+      /*
+      | @param None
+      | Terminates the token if needed at the end of a script
+      | run.
+      */
+      public function terminate_token()
+        {
+          $_SESSION['csrf_none_token'] = null;
+          $_SESSION['csrf_token']      = null;
+          return true;
         }
 
 
@@ -157,6 +177,31 @@
               ]);
               exit;
             }
+          else return false;
+        }
+
+
+
+      /*
+      | @param String, String, Array
+      | Takes first param and splits by "->," detering the table/column
+      | to search in, then the array specifies the reply back.
+      */
+      public function check($lookin, $for, $return_meta_array = [])
+        {
+          $lookin = explode('->',$lookin);
+          $statement = "SELECT {$lookin[1]} FROM {$lookin[0]} WHERE {$lookin[1]} = :data";
+          $binds     = [':data' => $for];
+          $q = $this->psm->cquery($statement, $binds);
+          if ( $q->rowCount() != 0 )
+            {
+              // We need to return that there's currently a column with that data.
+              $this->Return_Packer($return_meta_array['unique'], [
+                'html' => App::Alert( $return_meta_array['report'], 'warning' )
+              ]);
+              exit;
+            }
+          else return false;
         }
 
 
@@ -186,12 +231,29 @@
             exit;
           }
       // When the calls are done and the API call was finished correctly.
-        public function Success($message)
+        public function Success($message = 'Success!')
           {
             $this->Return_Packer('success', [
               'html' => App::Alert( $message, 'success' )
             ]);
             exit;
+          }
+
+      // A method called if the return data should be a href change.
+        public function href($goto)
+          {
+            $goto = '#!/'.$goto;
+            $this->Return_Packer('HREF', [
+              'html' => "<script>window.location.href='{$goto}';</script>"
+            ]);
+          }
+
+      // A method called if the return data should be a refresh.
+        public function reload()
+          {
+            $this->Return_Packer('RELOAD', [
+              'html' => '<script>window.location.reload();</script>'
+            ]);
           }
 
 

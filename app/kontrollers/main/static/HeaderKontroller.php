@@ -36,6 +36,9 @@
     public function link($array) {
       return "<li><a class='navbar-link' href='#!/{$array[1]}'>{$array[0]}</a></li>";
     }
+    public function link_farleft($array) {
+      return "<li><a class='navbar-link farleft-link' href='#!/{$array[1]}'>{$array[0]}</a></li>";
+    }
 
 
 

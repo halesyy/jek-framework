@@ -1,11 +1,11 @@
 @small-header
 
 <script>
-$(document).ready(function(){
-  window.jek.form_binder('login', 'index', function(sobj){
-    sobj.errorplace.html('XD!');
+  $(document).ready(function(){
+    window.jek.form_binder('login', 'index', function(sobj){
+      sobj.quick();
+    }, true);
   });
-});
 </script>
 
 <div class="container">
@@ -29,7 +29,8 @@ $(document).ready(function(){
             Login
           </div>
           <div class="content">
-            {{ csrf_make() }}
+            <@> {{ csrf_make() }}
+            {{ csrf_none() }}
 
             <select class="solo">
               @options countries
@@ -39,7 +40,7 @@ $(document).ready(function(){
             {{{ Form, Password, Password }}}
             {{{ Form, Submit, Login }}}
 
-            {{{ Form, Errorplace, form }}}
+            {{{ Form, Errorplace, login }}}
 
 
             @@builder

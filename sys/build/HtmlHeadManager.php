@@ -50,7 +50,7 @@
           '/public/js/main.js'
         ],
         'google_font' => [
-          'Lato|Montserrat|Oswald|Ubuntu|Ubuntu+Condensed'
+          'Lato|Montserrat|Oswald|Ubuntu|Ubuntu+Condensed|Open+Sans|Lora'
         ]
       ]);
 

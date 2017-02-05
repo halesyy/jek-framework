@@ -380,6 +380,14 @@
         if ($return) return $ipt; else echo $ipt;
       }
 
+    function csrf_none($return = false)
+      {
+        $token = generate_token();
+        $_SESSION['csrf_none_token'] = $token;
+        $ipt   = "<input type='hidden' name='token' value='{$token}' />";
+        if ($return) return $ipt; else echo $ipt;
+      }
+
 
 
     #

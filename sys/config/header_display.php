@@ -5,12 +5,12 @@
   | Links, Dropdowns, Brand name, etc...
   */
 
-  $c['hd']['header_image'] = '/public/images/headers/1.png';
+  $c['hd']['header_image'] = 'http://www.freewebheaders.com/wordpress/wp-content/gallery/forests-fields/green-forest-and-clouds-website-header.jpg';
 
   $c['hd']['site_logo_name'] = 'JekF';
 
   $c['hd']['triggerable'] = [
-    ['link', ['Login', 'login']],
+    ['link_farleft', ['Login', 'login']],
     ['dropdown', [
       'Zoe',
       'Sami'      => 'sami',

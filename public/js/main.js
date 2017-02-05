@@ -7,15 +7,24 @@ $(document).ready(function(){
       footer: $('#footer'),
       contentid: false,
 
+      // the height of the header container $('.header-container')
+      headercontainerheight: 50,
+      headercontainerpadding: 15,
+      //all triggerable links selector
+      triggerable: $('li[class="dropdown"] > a, li > .navbar-link'),
+      triggerable_padder: 15,
+      //things forced to = the height of the header header container.
+      heightmatchers: $('a[class="navbar-brand"]'),
+
       //footer
       basefooterheight:  30,
 
       // the height of the header is collapsed
-      largeheaderheight:   200,
+      largefooterheight:   150,
       // gset set
       normalheaderheight: false,
       // when the header is small
-      smallheaderheight: 60,
+      smallheaderheight: 120,
 
       docheight: function()
         {
@@ -30,8 +39,20 @@ $(document).ready(function(){
       /*the framework event handlers that should be used, nothing to do with the hash changes*/
       event_handlers: function()
         {
+          $('.horizontal-container').height( this.headercontainerheight );
+          this.triggerable.css({
+            'padding-bottom': this.triggerable_padder,
+            'padding-top':    this.triggerable_padder,
+            'padding-left':   20,
+            'padding-right':  20
+          });
+          this.heightmatchers.css({'padding':0,'margin':0});
+          this.heightmatchers.css({
+            'height' : this.headercontainerheight
+          });
+
           //making so the content can fit the footer when extended and not shut down content
-          this.content.css({'margin-bottom':this.largeheaderheight + 20});
+          this.content.css({'margin-bottom':this.largefooterheight + 20});
           this.normalheaderheight = this.header.height();
           // if ($(window).height() == $(document).height()) window.jek.footer_enlarge();
           $(window).scroll(function() {
@@ -126,7 +147,11 @@ $(document).ready(function(){
             callback({
               raw     : body,
               success : success,
-              errorplace : $('#'+formid+'-errorplace')
+              errorplace : $('#'+formid+'-errorplace'),
+              message : tdata.html,
+              quick   : function() {
+                $('#'+formid+'-errorplace').html(tdata.html);
+              }
             });
           });
         });
@@ -142,7 +167,7 @@ $(document).ready(function(){
 
     footer_enlarge: function()
       {
-        this.footer.height( this.largeheaderheight );
+        this.footer.height( this.largrfooterheight );
         $('#footer > #footer-preview').fadeOut(function(){
           $('#footer > #footer-content').fadeIn();
         });

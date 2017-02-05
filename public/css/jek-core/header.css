@@ -10,24 +10,40 @@
 
   }
 
+/*Selects all links in navbar.*/
+li[class="dropdown"] > a,
+li > .navbar-link,
+a[class="navbar-brand"]
+  {
+    vertical-align: middle !important;
+  }
+/*Selects all links in navbar when hovered over.*/
+li[class="dropdown"] > a:hover,
+li > .navbar-link:hover,
+a[class="navbar-brand"]:hover
+  {
+    background-color: whitesmoke !important;
+  }
+
+
 /*Setting the background color of the navbar as well as the dropdowns.
 ALL CUSTOMIZATION FOR THE DROPDOWNS AND NAVBAR LINKS.*/
 .header-container, .dropdown-menu
   {
     /*background-color: white !important;*/
     /*background:       rgba(0, 0, 0, 0.8);*/
-    background-color: rgba(47, 48, 52, 0.9) !important;
+    background-color: white !important;
     border-bottom-left-radius:  4px;
     border-bottom-right-radius: 4px;
   }
 .header-container
   {
-    height: 50px !important;
+    /*height: 100px !important;*/
   }
 /*The color of the fade in the background when hovering over a dropdown element.*/
 .dropdown-menu > li > a:hover
   {
-    background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: whitesmoke !important;
     background-image: none;
 
     transition: 0.5s;
@@ -36,7 +52,7 @@ ALL CUSTOMIZATION FOR THE DROPDOWNS AND NAVBAR LINKS.*/
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover
   {
     background-image: none !important;
-    background-color: black !important;
+    background-color: whitesmoke !important;
   }
 
 /*Speed of Triggered -> Static change after mouseoff.*/
@@ -47,7 +63,7 @@ ALL CUSTOMIZATION FOR THE DROPDOWNS AND NAVBAR LINKS.*/
 /*The color of a divider / seperator.*/
 .dropdown-menu .divider
   {
-    background-color: white !important;
+    background-color: whitesmoke !important;
   }
 /*Used so the container-fluid is the background color.*/
 .navbar
@@ -62,7 +78,7 @@ ALL CUSTOMIZATION FOR THE DROPDOWNS AND NAVBAR LINKS.*/
   {
     margin-right: 40px;
     font-family: 'Lato', Arial !important;
-    color:     white !important;
+    color:     black !important;
     text-transform: uppercase;
     font-size: 12px !important;
   }
@@ -79,9 +95,16 @@ ALL CUSTOMIZATION FOR THE DROPDOWNS AND NAVBAR LINKS.*/
 li[class="dropdown"] > a, .triggerable-links > li > a,
 .dropdown-menu > li > a
   {
-    color:          white !important;
+    color:          black !important;
     text-transform: uppercase;
-    font-family:    'Lato', Sans-Serif !important;
-    font-size:      12px !important;
+    font-family:    'Open Sans', Sans-Serif !important;
+    font-size:      14px !important;
+    font-weight:    bold;
     /*font-weight:    bold;*/
+
+    border-right: solid whitesmoke 1px;
+  }
+.farleft-link
+  {
+    border-left:   solid whitesmoke 1px;
   }

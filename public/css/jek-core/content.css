@@ -8,15 +8,45 @@ example a color that represents the main color of your site.*/
   {
     color: white;
   }
-
+.background-color
+  {
+    background-color: whitesmoke;
+  }
+/*All sexy-text looks.*/
+.text-container
+  {
+    padding: 20px;
+  }
+.text-container-color
+  {
+    background-color: whitesmoke;
+    padding: 20px;
+  }
+.text, .big-text, .small-text
+  {
+    font-family: 'Lora', Arial, Sans-Serif;
+    font-size: 15.4px;
+    line-height: 30px;
+    color: rgb(69, 70, 70);
+    margin-bottom: 15px;
+  }
+.big-text
+  {
+    font-size: 19px;
+  }
+.small-text
+  {
+    font-size: 12px;
+  }
 
 #content
   {
-    color:        #666666;
+    color:         #666;
     margin-bottom: 100px;
   }
 #header
   {
+    height: 300px;
     transition: height 0.3s;
     position:relative;
     z-index:1;
