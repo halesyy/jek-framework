@@ -93,7 +93,8 @@
               );
           }
 
-        // Takes in a numerative array and will convert keywords into arrays and combine.
+
+      /*Takes in a numerative array and will convert keywords into arrays and combine.*/
         public function ForceRangler($force_types)
           {
             $types = [

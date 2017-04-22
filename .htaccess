@@ -2,9 +2,11 @@ DirectoryIndex index.php
 
 RewriteEngine on
 RewriteBase /
+#RewriteCond %{REQUEST_FILENAME} \.(?:js)$ [NC]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?/$1 [L]
 
-#RewriteCond %{REQUEST_FILENAME} !.(ico,css,js,jpg,gif,png)$
+#RewriteCond %{REQUEST_FILENAME} !.(ico,js,jpg,gif,png)$
 #RewriteCond $1 !^(index\.php|robots\.txt)

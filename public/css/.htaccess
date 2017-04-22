@@ -1,0 +1,5 @@
+DirectoryIndex CompilerSS.php
+
+RewriteEngine on
+
+RewriteRule ^(.*)$ CompilerSS.php?/$1 [L]

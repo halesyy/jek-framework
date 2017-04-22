@@ -1,3 +1,3 @@
 <div id="content">
-  <p>Loading...</p>
+  <p>Content</p>
 </div>
